@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 
 export default function ConfigurarInvitados() {
-  const [cantidad, setCantidad] = useState(1);
-  const [invitados, setInvitados] = useState([{ nombre: "", apellido: "" }]);
+  const [cantidad, setCantidad] = useState("");
+  const [invitados, setInvitados] = useState([]);
 
   const handleCantidadChange = (e) => {
-    const value = parseInt(e.target.value) || 1;
-    setCantidad(value);
-    setInvitados(
-      Array.from({ length: value }, (_, i) => invitados[i] || { nombre: "", apellido: "" })
-    );
+    const value = parseInt(e.target.value) || 0;
+    setCantidad(e.target.value);
+
+    if (value > 0) {
+      setInvitados(
+        Array.from({ length: value }, (_, i) => invitados[i] || { nombre: "", apellido: "" })
+      );
+    } else {
+      setInvitados([]);
+    }
   };
 
   const handleInvitadoChange = (index, field, value) => {
@@ -38,32 +43,35 @@ export default function ConfigurarInvitados() {
         <label className="block text-sm font-medium">Cantidad de invitados</label>
         <input
           type="number"
-          min={1}
+          min={0}
           value={cantidad}
           onChange={handleCantidadChange}
           className="w-full border p-2 rounded"
+          placeholder="0"
         />
       </div>
-      <div className="space-y-4">
-        {invitados.map((invitado, idx) => (
-          <div key={idx} className="grid grid-cols-2 gap-2">
-            <input
-              type="text"
-              placeholder={`Nombre ${idx + 1}`}
-              value={invitado.nombre}
-              onChange={(e) => handleInvitadoChange(idx, "nombre", e.target.value)}
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              placeholder={`Apellido ${idx + 1}`}
-              value={invitado.apellido}
-              onChange={(e) => handleInvitadoChange(idx, "apellido", e.target.value)}
-              className="border p-2 rounded"
-            />
-          </div>
-        ))}
-      </div>
+      {invitados.length > 0 && (
+        <div className="space-y-4">
+          {invitados.map((invitado, idx) => (
+            <div key={idx} className="grid grid-cols-2 gap-2">
+              <input
+                type="text"
+                placeholder={`Nombre ${idx + 1}`}
+                value={invitado.nombre}
+                onChange={(e) => handleInvitadoChange(idx, "nombre", e.target.value)}
+                className="border p-2 rounded"
+              />
+              <input
+                type="text"
+                placeholder={`Apellido ${idx + 1}`}
+                value={invitado.apellido}
+                onChange={(e) => handleInvitadoChange(idx, "apellido", e.target.value)}
+                className="border p-2 rounded"
+              />
+            </div>
+          ))}
+        </div>
+      )}
       <div>
         <button
           onClick={generarLink}

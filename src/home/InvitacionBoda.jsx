@@ -15,7 +15,6 @@ export default function InvitacionBoda({ invitados = [] }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
-  const [autoplayAttempted, setAutoplayAttempted] = useState(false);
 
   useEffect(() => {
     AOS.init({
@@ -23,28 +22,45 @@ export default function InvitacionBoda({ invitados = [] }) {
       once: true,
     });
 
-    if (audioRef.current) {
-      audioRef.current
-        .play()
-        .then(() => {
-          setIsPlaying(true);
-          console.log("🎵 Música reproduciéndose automáticamente.");
-        })
-        .catch((err) => {
-          setIsPlaying(false);
-          setAutoplayAttempted(true);
-          console.warn("🎵 Autoplay bloqueado por el navegador:", err);
-        });
-    }
+    // Intentar reproducir de entrada
+    const attemptPlay = () => {
+      if (audioRef.current) {
+        audioRef.current
+          .play()
+          .then(() => {
+            setIsPlaying(true);
+            console.log("🎵 Música reproduciéndose automáticamente.");
+          })
+          .catch((err) => {
+            console.warn("🎵 Autoplay bloqueado, esperando interacción:", err);
+
+            // Escuchar el primer click/tap
+            const unlockAudio = () => {
+              audioRef.current
+                .play()
+                .then(() => {
+                  setIsPlaying(true);
+                  console.log("🎵 Música iniciada tras interacción.");
+                })
+                .catch((err2) => {
+                  console.error("🎵 Aún no se pudo reproducir:", err2);
+                });
+
+              document.removeEventListener("click", unlockAudio);
+              document.removeEventListener("touchstart", unlockAudio);
+            };
+
+            document.addEventListener("click", unlockAudio);
+            document.addEventListener("touchstart", unlockAudio);
+          });
+      }
+    };
+
+    attemptPlay();
   }, []);
 
   const toggleAudio = () => {
     if (!audioRef.current) return;
-
-    // Si el autoplay falló, resetear audio antes de reproducir
-    if (autoplayAttempted && audioRef.current.paused) {
-      audioRef.current.load();
-    }
 
     if (audioRef.current.paused) {
       audioRef.current
@@ -110,31 +126,24 @@ export default function InvitacionBoda({ invitados = [] }) {
         <div data-aos="fade-up">
           <InvitacionPrincipal />
         </div>
-
         <div data-aos="fade-right">
           <Galeria setSelectedImage={setSelectedImage} />
         </div>
-
         <div data-aos="fade-left">
           <Padres invitados={invitados} />
         </div>
-
         <div data-aos="zoom-in">
           <FechaUbicacion />
         </div>
-
         <div data-aos="fade-up">
           <CeremoniaRecepcion />
         </div>
-
         <div data-aos="fade-up">
           <FormularioMensaje />
         </div>
-
         <div data-aos="fade-up">
           <Despedida />
         </div>
-
         <ModalImagen
           selectedImage={selectedImage}
           setSelectedImage={setSelectedImage}
