@@ -3,117 +3,37 @@ import React from "react";
 export default function Confirmacion() {
   return (
     <div className="w-full flex justify-center">
-      <div className="bg-white/90 rounded-3xl shadow-2xl w-full text-center backdrop-blur max-w-sm p-6 border-2 border-purple-200 relative overflow-hidden">
-        {/* Decoraciones */}
-        <div className="w-full h-full absolute top-0 left-0 opacity-5">
-          <div className="text-purple-300 text-6xl absolute top-4 right-4">✨</div>
-          <div className="text-pink-300 text-4xl absolute bottom-8 left-4">🌸</div>
-        </div>
+      <div className="bg-white rounded-3xl shadow-xl w-full text-center max-w-sm p-10 border border-emerald-100 space-y-6">
+        {/* Mensaje principal */}
+        <p
+          className="text-emerald-700 text-base italic"
+          style={{ fontFamily: "'Playfair Display', serif" }}
+        >
+          Para confirmar tu asistencia, háblanos a este número:
+        </p>
 
-        {/* Invitado */}
-        <div className="mb-6 relative z-10">
-          <div className="mb-4">
-            <p className="text-purple-600 font-light text-3xl mb-1 tracking-wide">Silvia</p>
-            <p className="text-purple-600 font-light text-3xl mb-4 tracking-wide">Barrios</p>
-          </div>
-          <div className="relative">
-            <div className="bg-gradient-to-r rounded-full px-6 py-3 shadow-lg from-purple-500 to-pink-500 inline-block">
-              <span className="text-white font-bold text-3xl">7</span>
-            </div>
-            <div className="w-6 h-6 bg-yellow-400 rounded-full absolute -top-2 -right-2 animate-pulse"></div>
-          </div>
-          <p className="text-purple-500 text-sm mt-3 font-medium">Número de invitados</p>
-        </div>
-
-        {/* Avisos */}
-        <div className="mb-6 space-y-3">
-          <div className="bg-gradient-to-r rounded-2xl shadow-sm from-purple-100 to-purple-50 p-4 border border-purple-200">
-            <div className="items-center justify-center mb-2 flex">
-              <span className="text-2xl mr-2">🎫</span>
-              <p className="text-purple-700 font-semibold text-sm">IMPORTANTE</p>
-            </div>
-            <p className="text-purple-600 text-sm leading-relaxed">
-              Presentar invitación para ingresar al parque, espacios limitados.
-            </p>
-          </div>
-          <div className="bg-gradient-to-r rounded-2xl shadow-sm from-pink-100 to-pink-50 p-4 border border-pink-200">
-            <div className="items-center justify-center mb-2 flex">
-              <span className="text-2xl mr-2">📅</span>
-              <p className="text-pink-700 font-semibold text-sm">CONFIRMA TU ASISTENCIA</p>
-            </div>
-            <p className="text-pink-600 text-sm leading-relaxed mb-2">
-              No olvides confirmar antes del
-            </p>
-            <div className="bg-pink-200 rounded-lg py-2 px-3 inline-block">
-              <span className="font-bold text-pink-800 text-lg">3 de Mayo</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Botón Confirmar */}
-        <div className="mb-8 relative z-10">
-          <p className="text-gray-600 text-sm mb-3 font-medium">👆 Toca para confirmar</p>
-          <div className="relative inline-block">
-            <div className="items-center justify-center w-20 h-20 bg-gradient-to-r rounded-full shadow-xl inline-flex from-green-400 to-green-500 hover:shadow-2xl transition-all cursor-pointer hover:scale-110 transform">
-              <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967..." />
-              </svg>
-            </div>
-            <div className="w-6 h-6 bg-red-500 rounded-full items-center justify-center absolute -top-1 -right-1 flex">
-              <span className="text-white text-xs font-bold">!</span>
-            </div>
-            <div className="w-4 h-4 bg-green-500 rounded-full absolute -bottom-2 left-1/2 transform -translate-x-1/2 animate-ping"></div>
-          </div>
-          <div className="mt-3 bg-green-50 rounded-lg py-2 px-4 inline-block border border-green-200">
-            <p className="text-green-700 text-sm font-semibold">📱 NANCY CABRERA</p>
-          </div>
-        </div>
-
-        {/* Separador */}
-        <div className="mb-6">
-          <div className="items-center justify-center flex">
-            <div className="h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent flex-1"></div>
-            <div className="mx-4 flex space-x-1">
-              <div className="w-2 h-2 bg-purple-300 rounded-full animate-pulse"></div>
-              <div
-                className="w-2 h-2 bg-pink-300 rounded-full animate-pulse"
-                style={{ animationDelay: "0.2s" }}
-              ></div>
-              <div
-                className="w-2 h-2 bg-blue-300 rounded-full animate-pulse"
-                style={{ animationDelay: "0.4s" }}
-              ></div>
-            </div>
-            <div className="h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent flex-1"></div>
-          </div>
-        </div>
-
-        {/* Observaciones */}
-        <div className="mb-6">
-          <div className="text-5xl mb-3">🌿</div>
-          <p style={{ fontFamily: "cursive" }} className="text-teal-500 text-2xl mb-4 font-light">
-            Observaciones
+        {/* Botón de WhatsApp */}
+        <a
+          href="https://wa.me/50233331001"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex flex-col items-center space-y-3 hover:scale-105 transition-transform"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-12 h-12 text-emerald-600"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M20.52 3.48A11.9 11.9 0 0 0 12 0C5.38 0 0 5.38 0 12c0 2.12.56 4.17 1.63 5.98L0 24l6.25-1.63A11.97 11.97 0 0 0 12 24c6.62 0 12-5.38 12-12 0-3.2-1.24-6.2-3.48-8.52zM12 22c-1.9 0-3.75-.5-5.38-1.47l-.38-.23-3.72.97.99-3.6-.24-.38C2.5 15.75 2 13.9 2 12 2 6.48 6.48 2 12 2c2.65 0 5.15 1.03 7.03 2.9A9.91 9.91 0 0 1 22 12c0 5.52-4.48 10-10 10zm5.04-7.4c-.27-.14-1.6-.8-1.85-.9-.25-.1-.44-.14-.63.14-.18.27-.72.9-.88 1.1-.16.18-.32.2-.6.07-.27-.14-1.12-.41-2.13-1.3-.79-.7-1.32-1.56-1.47-1.83-.15-.27-.02-.42.11-.56.12-.12.27-.32.4-.48.13-.16.17-.27.25-.45.08-.18.04-.34-.02-.48-.07-.14-.63-1.52-.87-2.1-.23-.55-.46-.48-.63-.49-.16-.01-.34-.01-.52-.01-.18 0-.48.07-.73.34-.25.27-.97.95-.97 2.3 0 1.34.99 2.64 1.13 2.82.14.18 1.96 3 4.75 4.22.66.29 1.17.47 1.57.6.66.21 1.26.18 1.74.11.53-.08 1.6-.65 1.83-1.28.23-.63.23-1.16.16-1.28-.07-.12-.25-.18-.52-.32z" />
+          </svg>
+          <p
+            className="text-emerald-700 text-lg italic"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
+            Andrea Cuéllar
           </p>
-        </div>
-
-        <div className="bg-gradient-to-br rounded-2xl shadow-inner from-purple-50 via-pink-50 to-blue-50 p-6 border-2 border-purple-100">
-          <div className="justify-center mb-4 flex space-x-4">
-            <div className="text-center">
-              <div className="text-4xl mb-1">👔</div>
-              <p className="text-xs text-purple-600">Hombres</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl mb-1">👗</div>
-              <p className="text-xs text-purple-600">Mujeres</p>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg py-3 px-4 shadow-sm border border-purple-200">
-            <p className="text-purple-600 font-bold text-lg tracking-wider mb-1">
-              CÓDIGO DE VESTIMENTA
-            </p>
-            <p className="text-purple-700 text-xl font-bold">FORMAL</p>
-          </div>
-        </div>
+        </a>
       </div>
     </div>
   );

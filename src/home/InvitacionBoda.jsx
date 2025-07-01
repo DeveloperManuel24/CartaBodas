@@ -10,19 +10,32 @@ import Galeria from "./Components/Galeria";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Confirmacion from "./Components/Confirmacion";
 
-export default function InvitacionBoda({ invitados = [] }) {
+export default function InvitacionBoda() {
+  const [invitados, setInvitados] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 
   useEffect(() => {
+    // Inicializar AOS
     AOS.init({
       duration: 1000,
       once: true,
     });
 
-    // Intentar reproducir de entrada
+    // Cargar invitados desde localStorage
+    const guardados = localStorage.getItem("invitados");
+    if (guardados) {
+      try {
+        setInvitados(JSON.parse(guardados));
+      } catch (err) {
+        console.error("❌ Error leyendo invitados guardados:", err);
+      }
+    }
+
+    // Intentar reproducir música
     const attemptPlay = () => {
       if (audioRef.current) {
         audioRef.current
@@ -34,7 +47,6 @@ export default function InvitacionBoda({ invitados = [] }) {
           .catch((err) => {
             console.warn("🎵 Autoplay bloqueado, esperando interacción:", err);
 
-            // Escuchar el primer click/tap
             const unlockAudio = () => {
               audioRef.current
                 .play()
@@ -81,15 +93,9 @@ export default function InvitacionBoda({ invitados = [] }) {
         relative
         min-h-screen
         w-full
-        bg-gradient-to-br
-        from-purple-100
-        via-pink-50
-        to-purple-200
-        dark:from-gray-900
-        dark:via-gray-800
-        dark:to-gray-900
         py-10
         px-4
+        bg-white
       "
     >
       {/* Audio element */}
@@ -98,7 +104,7 @@ export default function InvitacionBoda({ invitados = [] }) {
       {/* Botón de control de audio */}
       <button
         onClick={toggleAudio}
-        className="absolute top-4 right-4 bg-white/80 hover:bg-white/90 text-purple-600 rounded-full p-3 shadow-lg transition"
+        className="fixed top-4 right-4 z-50 bg-white/80 hover:bg-white/90 text-emerald-700 rounded-full p-3 shadow-lg transition"
         title={isPlaying ? "Pausar música" : "Reproducir música"}
       >
         {isPlaying ? (
@@ -139,7 +145,7 @@ export default function InvitacionBoda({ invitados = [] }) {
           <CeremoniaRecepcion />
         </div>
         <div data-aos="fade-up">
-          <FormularioMensaje />
+          <Confirmacion />
         </div>
         <div data-aos="fade-up">
           <Despedida />

@@ -2,104 +2,116 @@ import React from "react";
 
 export default function FechaUbicacion() {
   return (
-    <div className="mx-auto bg-white/80 dark:bg-gray-800/90 shadow-2xl max-w-md backdrop-blur-sm min-h-screen">
-      <div className="h-2 bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400"></div>
+    <div className="mx-auto bg-white max-w-md rounded-xl shadow-2xl overflow-hidden">
+      {/* Línea superior */}
+      <div className="h-2 bg-gradient-to-r from-emerald-400 via-yellow-400 to-emerald-500"></div>
 
       {/* Fecha */}
-      <div className="text-center bg-gradient-to-b p-10 from-white/90 to-purple-50/50 dark:from-gray-800/90 dark:to-purple-900/30 relative overflow-hidden">
-        <div className="w-32 h-32 bg-purple-200/20 rounded-full absolute top-0 left-0 -translate-x-16 -translate-y-16"></div>
-        <div className="w-24 h-24 bg-pink-200/20 rounded-full absolute bottom-0 right-0 translate-x-12 translate-y-12"></div>
-        <div className="mb-6 relative">
-          <div className="w-20 h-20 mx-auto bg-gradient-to-r rounded-full items-center justify-center shadow-lg from-purple-400 to-pink-400 flex">
-            <span className="text-3xl">🌸</span>
+      <div className="text-center p-10 relative">
+        {/* Icono */}
+        <div className="mb-6">
+          <div className="w-20 h-20 mx-auto bg-emerald-100 rounded-full flex items-center justify-center shadow-lg">
+            <span className="text-3xl">📅</span>
           </div>
         </div>
+        {/* Título */}
         <p
-          style={{ fontFamily: "'Brush Script MT', cursive" }}
-          className="text-3xl font-light text-transparent bg-gradient-to-r mb-8 bg-clip-text from-purple-600 to-pink-600"
+          className="text-3xl italic mb-6 text-emerald-700"
+          style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          Fecha:
+          Fecha
         </p>
-        <div className="bg-white/70 dark:bg-gray-700/50 rounded-2xl shadow-lg p-6 backdrop-blur-sm border border-purple-100 dark:border-purple-800">
-          <div className="text-purple-600 text-lg font-semibold tracking-wider mb-2 dark:text-purple-400 uppercase">
+        {/* Contenido */}
+        <div className="bg-white border border-emerald-200 rounded-2xl shadow p-6">
+          <div className="text-emerald-700 text-lg font-semibold mb-2 uppercase tracking-wide">
             SÁBADO
           </div>
-          <div className="text-gray-700 text-xl font-light dark:text-gray-300">
+          <div className="text-gray-700 text-xl font-light">
             17 | MAYO | 2025
           </div>
         </div>
       </div>
 
       {/* Botón Google Calendar */}
-      <div className="text-center bg-white/60 dark:bg-gray-800/60 p-8 relative">
-        <div className="bg-gradient-to-r absolute inset-0 from-purple-100/20 to-pink-100/20 dark:from-purple-900/20 dark:to-pink-900/20"></div>
-        <div className="relative">
-          <div
-            className="w-20 h-20 bg-gradient-to-br rounded-2xl items-center justify-center mx-auto mb-6 shadow-xl from-purple-500 to-purple-700 flex transform hover:scale-105 transition-transform duration-300 cursor-pointer"
-            onClick={() => window.open("https://calendar.google.com", "_blank")}
-          >
-            <span className="text-white text-3xl font-bold">G</span>
-          </div>
-          <div className="text-sm text-gray-600 tracking-wide font-medium bg-white/50 dark:bg-gray-700/50 rounded-lg dark:text-gray-300 uppercase p-4 backdrop-blur-sm">
-            CLICK AQUÍ PARA ACTIVAR
-            <br />
-            <span className="text-purple-600 font-semibold dark:text-purple-400">
-              FECHA A TU GOOGLE CALENDAR
-            </span>
-          </div>
+      <div className="text-center p-8">
+        <div
+          className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl mx-auto mb-6 shadow-lg flex items-center justify-center cursor-pointer transform hover:scale-105 transition-transform duration-300"
+          onClick={() =>
+            window.open("https://calendar.google.com", "_blank")
+          }
+        >
+          <span className="text-white text-3xl font-bold">G</span>
+        </div>
+        <div className="text-sm text-emerald-700 uppercase font-medium">
+          CLICK AQUÍ PARA AÑADIR
+          <br />
+          <span className="font-semibold text-yellow-600">
+            LA FECHA A TU CALENDARIO
+          </span>
         </div>
       </div>
 
       {/* Ubicación */}
-      <div className="text-center bg-gradient-to-b p-10 from-purple-50/50 to-white/90 dark:from-purple-900/30 dark:to-gray-800/90 relative overflow-hidden">
-        <div className="w-28 h-28 bg-indigo-200/20 rounded-full absolute top-0 right-0 translate-x-14 -translate-y-14"></div>
-        <div className="w-20 h-20 bg-purple-200/20 rounded-full absolute bottom-0 left-0 -translate-x-10 translate-y-10"></div>
-        <div className="mb-6 relative">
-          <div className="w-20 h-20 mx-auto bg-gradient-to-r rounded-full items-center justify-center shadow-lg from-indigo-400 to-purple-500 flex">
-            <span className="text-3xl">⛪</span>
+      <div className="text-center p-10 relative">
+        {/* Icono */}
+        <div className="mb-6">
+          <div className="w-20 h-20 mx-auto bg-emerald-100 rounded-full flex items-center justify-center shadow-lg">
+            <span className="text-3xl">📍</span>
           </div>
         </div>
+        {/* Título */}
         <p
-          style={{ fontFamily: "'Brush Script MT', cursive" }}
-          className="text-3xl font-light text-transparent bg-gradient-to-r mb-6 bg-clip-text from-indigo-600 to-purple-600"
+          className="text-3xl italic mb-6 text-emerald-700"
+          style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          Ubicación:
+          Ubicación
         </p>
-        <div className="bg-white/80 dark:bg-gray-700/60 rounded-2xl shadow-xl p-8 backdrop-blur-sm border border-purple-100 dark:border-purple-800">
-          <div className="text-purple-700 text-xl font-semibold tracking-wide mb-4 dark:text-purple-300 uppercase">
+        {/* Contenido */}
+        <div className="bg-white border border-emerald-200 rounded-2xl shadow p-8">
+          <div className="text-emerald-700 text-xl font-semibold uppercase mb-4">
             IGLESIA LA MERCED
           </div>
-          <div className="text-gray-600 text-sm leading-relaxed dark:text-gray-400 space-y-1">
+          <div className="text-gray-700 text-sm leading-relaxed space-y-1">
             <div className="font-medium">6a Avenida Norte y</div>
             <div className="font-medium">1a Calle Poniente</div>
-            <div className="text-indigo-600 font-semibold dark:text-indigo-400">
+            <div className="text-yellow-600 font-semibold">
               Antigua Guatemala
             </div>
           </div>
         </div>
       </div>
 
-      {/* Botón Waze */}
-      <div className="text-center bg-white/60 dark:bg-gray-800/60 p-8 relative">
-        <div className="bg-gradient-to-r absolute inset-0 from-indigo-100/20 to-purple-100/20 dark:from-indigo-900/20 dark:to-purple-900/20"></div>
-        <div className="relative">
-          <div
-            className="w-20 h-20 bg-gradient-to-br rounded-2xl items-center justify-center mx-auto mb-6 shadow-xl from-blue-400 to-indigo-500 flex transform hover:scale-105 transition-transform duration-300 cursor-pointer"
-            onClick={() => window.open("https://www.waze.com/ul", "_blank")}
+      {/* Botón Waze con ícono */}
+      <div className="text-center p-8">
+        <div
+          className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-2xl mx-auto mb-6 shadow-lg flex items-center justify-center cursor-pointer transform hover:scale-105 transition-transform duration-300"
+          onClick={() =>
+            window.open("https://www.waze.com/ul", "_blank")
+          }
+        >
+          {/* Ícono Waze SVG */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            className="w-10 h-10 text-white"
           >
-            <span className="text-white text-3xl font-bold">W</span>
-          </div>
-          <div className="text-sm text-gray-600 tracking-wide font-medium bg-white/50 dark:bg-gray-700/50 rounded-lg dark:text-gray-300 uppercase p-4 backdrop-blur-sm">
-            CLICK AQUÍ PARA
-            <br />
-            <span className="text-indigo-600 font-semibold dark:text-indigo-400">
-              LLEGAR CON WAZE
-            </span>
-          </div>
+            <path
+              fill="currentColor"
+              d="M484.7 325.6c-17.2-11.9-33.2-22.9-33.2-47.6V192c0-79.5-64.5-144-144-144H204C124.5 48 60 112.5 60 192v86c0 24.7-16 35.7-33.2 47.6C7.9 340.1 0 350.2 0 368c0 22.1 17.9 40 40 40h432c22.1 0 40-17.9 40-40 0-17.8-7.9-27.9-27.3-42.4zM160 336c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm192 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32z"
+            />
+          </svg>
+        </div>
+        <div className="text-sm text-emerald-700 uppercase font-medium">
+          CLICK AQUÍ PARA
+          <br />
+          <span className="font-semibold text-yellow-600">
+            LLEGAR CON WAZE
+          </span>
         </div>
       </div>
 
-      <div className="h-2 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400"></div>
+      {/* Línea inferior */}
+      <div className="h-2 bg-gradient-to-r from-emerald-400 via-yellow-400 to-emerald-500"></div>
     </div>
   );
 }
