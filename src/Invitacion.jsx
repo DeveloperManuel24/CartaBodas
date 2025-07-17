@@ -18,8 +18,8 @@ export default function Invitacion() {
       <div
         className="absolute inset-0 bg-white/40 z-10"
         style={{
-          backdropFilter: "blur(1px)",             // 👈 Control fino del blur
-          WebkitBackdropFilter: "blur(6px)",       // 👈 Soporte para Safari
+          backdropFilter: "blur(1px)",
+          WebkitBackdropFilter: "blur(6px)",
         }}
       />
 
@@ -28,10 +28,13 @@ export default function Invitacion() {
         {/* Nombres */}
         <div className="mb-10">
           <p
-            className="text-7xl md:text-8xl font-medium mb-4 leading-tight"
+            className="text-7xl md:text-8xl mb-4 leading-tight"
             style={{
               fontFamily: "'Dancing Script', cursive",
               color: "#D4AF37",
+              fontWeight: 700, // Más grueso
+              WebkitTextStroke: "0.3px #D4AF37", // Contorno sutil
+              textShadow: "0 1px 1px rgba(0,0,0,0.2)", // Profundidad
             }}
           >
             Mario
@@ -49,10 +52,13 @@ export default function Invitacion() {
             <div className="w-12 h-px bg-gray-400"></div>
           </div>
           <p
-            className="text-7xl md:text-8xl font-medium leading-tight"
+            className="text-7xl md:text-8xl leading-tight"
             style={{
               fontFamily: "'Dancing Script', cursive",
               color: "#D4AF37",
+              fontWeight: 700,
+              WebkitTextStroke: "0.3px #D4AF37",
+              textShadow: "0 1px 1px rgba(0,0,0,0.2)",
             }}
           >
             Andrea
