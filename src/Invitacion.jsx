@@ -18,7 +18,7 @@ export default function Invitacion() {
       <div
         className="absolute inset-0 bg-white/40 z-10"
         style={{
-          backdropFilter: "blur(2px)",             // 👈 Control fino del blur
+          backdropFilter: "blur(1px)",             // 👈 Control fino del blur
           WebkitBackdropFilter: "blur(6px)",       // 👈 Soporte para Safari
         }}
       />
