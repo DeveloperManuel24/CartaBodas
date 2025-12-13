@@ -15,19 +15,16 @@ export default function InvitacionPrincipal() {
   const PDF_URL = useMemo(() => encodeURI("/Invitacion Boda4.pdf"), []);
 
   // =============================
-  // IMÁGENES (TU RUTA REAL)
+  // IMÁGENES (public)
   // =============================
-  const slides = useMemo(
-    () => ["/1.JPG", "/2.JPG", "/3.JPG", "/4.JPG", "/5.JPG"],
-    []
-  );
+  const slides = useMemo(() => ["/1.JPG", "/2.JPG", "/3.JPG", "/4.JPG", "/5.JPG"], []);
 
   // =============================
   // AJUSTES POR PORCENTAJE (TOCÁ SOLO ESTO)
   // =============================
   const SLIDES_PAGE = 1;
 
-  // Bloque blanco grande (tapa el grid)
+  // Bloque “papel” (tapa el grid) — look impreso (menos “widget encima”)
   const TAPE_MOBILE_TOP = "45%";
   const TAPE_MOBILE_LEFT = "50%";
   const TAPE_MOBILE_W = "120%";
@@ -43,11 +40,13 @@ export default function InvitacionPrincipal() {
   const TAPE_DESKTOP_SHIFT_X = "0%";
   const TAPE_DESKTOP_SHIFT_Y = "0%";
 
-  const TAPE_RADIUS = 22;
-  const TAPE_SHADOW = "0 28px 70px rgba(0,0,0,0.14)";
-  const TAPE_BORDER = "1px solid rgba(0,0,0,0.06)";
-  const INNER_PAD_MOBILE = 14;
-  const INNER_PAD_DESKTOP = 18;
+  // Estética “impresa”
+  const TAPE_BG = "rgba(255,255,255,0.96)";
+  const TAPE_RADIUS = 10;
+  const TAPE_SHADOW = "none";
+  const TAPE_BORDER = "1px solid rgba(63,75,36,0.18)";
+  const INNER_PAD_MOBILE = 12;
+  const INNER_PAD_DESKTOP = 14;
 
   // =============================
   // RESPONSIVE PDF
@@ -162,7 +161,7 @@ export default function InvitacionPrincipal() {
       const dy = t.clientY - touchRef.current.y;
       const dt = Date.now() - touchRef.current.t;
 
-      if (dt < 600 && Math.abs(dx) > 45 && Math.abs(dy) < 80) {
+      if (dt < 650 && Math.abs(dx) > 45 && Math.abs(dy) < 90) {
         if (dx > 0) goPrev();
         else goNext();
       }
@@ -170,7 +169,7 @@ export default function InvitacionPrincipal() {
     [goPrev, goNext]
   );
 
-  // Fallback si un día cambiás extensión (JPG <-> jpg)
+  // Fallback si cambiás extensión (JPG <-> jpg)
   const onImgError = useCallback((e) => {
     const img = e.currentTarget;
     const src = String(img?.getAttribute("src") || "");
@@ -215,7 +214,7 @@ export default function InvitacionPrincipal() {
                   />
 
                   {/* ==================================
-                      BLOQUE BLANCO + GALERÍA SELECCIONABLE
+                      BLOQUE “PAPEL” + GALERÍA (look integrado)
                      ================================== */}
                   <div
                     className="absolute z-50"
@@ -225,7 +224,7 @@ export default function InvitacionPrincipal() {
                       width: `${tapeWidthPx}px`,
                       height: `${preset.hPx}px`,
                       transform: `translate(calc(-50% + ${preset.shiftX}), ${preset.shiftY})`,
-                      background: "white",
+                      background: TAPE_BG,
                       borderRadius: `${TAPE_RADIUS}px`,
                       boxShadow: TAPE_SHADOW,
                       border: TAPE_BORDER,
@@ -250,9 +249,10 @@ export default function InvitacionPrincipal() {
                             position: "relative",
                             flex: "1 1 auto",
                             width: "100%",
-                            borderRadius: `${Math.max(14, TAPE_RADIUS - 6)}px`,
+                            borderRadius: `${Math.max(10, TAPE_RADIUS - 2)}px`,
                             overflow: "hidden",
-                            background: "#fff",
+                            background: "rgba(255,255,255,0.9)",
+                            border: "1px solid rgba(0,0,0,0.06)",
                           }}
                         >
                           <img
@@ -266,29 +266,30 @@ export default function InvitacionPrincipal() {
                               height: "100%",
                               objectFit: "cover",
                               display: "block",
+                              transition: "opacity 220ms ease",
                             }}
                           />
 
-                          {/* Prev/Next */}
+                          {/* Prev/Next (más “impreso”: pequeño y sutil; en móvil se oculta) */}
                           <button
                             type="button"
                             onClick={goPrev}
                             aria-label="Anterior"
                             style={{
+                              display: isMobile ? "none" : "grid",
+                              placeItems: "center",
                               position: "absolute",
                               top: "50%",
                               left: 10,
                               transform: "translateY(-50%)",
-                              width: 42,
-                              height: 42,
+                              width: 34,
+                              height: 34,
                               borderRadius: 999,
-                              border: "1px solid rgba(0,0,0,0.08)",
-                              background: "rgba(255,255,255,0.92)",
-                              boxShadow: "0 10px 30px rgba(0,0,0,0.10)",
+                              border: "1px solid rgba(63,75,36,0.18)",
+                              background: "rgba(255,255,255,0.65)",
+                              boxShadow: "none",
                               cursor: "pointer",
-                              display: "grid",
-                              placeItems: "center",
-                              fontSize: 20,
+                              fontSize: 18,
                               lineHeight: 1,
                               userSelect: "none",
                             }}
@@ -301,20 +302,20 @@ export default function InvitacionPrincipal() {
                             onClick={goNext}
                             aria-label="Siguiente"
                             style={{
+                              display: isMobile ? "none" : "grid",
+                              placeItems: "center",
                               position: "absolute",
                               top: "50%",
                               right: 10,
                               transform: "translateY(-50%)",
-                              width: 42,
-                              height: 42,
+                              width: 34,
+                              height: 34,
                               borderRadius: 999,
-                              border: "1px solid rgba(0,0,0,0.08)",
-                              background: "rgba(255,255,255,0.92)",
-                              boxShadow: "0 10px 30px rgba(0,0,0,0.10)",
+                              border: "1px solid rgba(63,75,36,0.18)",
+                              background: "rgba(255,255,255,0.65)",
+                              boxShadow: "none",
                               cursor: "pointer",
-                              display: "grid",
-                              placeItems: "center",
-                              fontSize: 20,
+                              fontSize: 18,
                               lineHeight: 1,
                               userSelect: "none",
                             }}
@@ -322,13 +323,13 @@ export default function InvitacionPrincipal() {
                             ›
                           </button>
 
-                          {/* Dots */}
+                          {/* Dots (sutil) */}
                           <div
                             style={{
                               position: "absolute",
                               left: 0,
                               right: 0,
-                              bottom: 10,
+                              bottom: 8,
                               display: "flex",
                               justifyContent: "center",
                               gap: 6,
@@ -343,14 +344,16 @@ export default function InvitacionPrincipal() {
                                   height: 7,
                                   borderRadius: 999,
                                   background:
-                                    i === active ? "rgba(0,0,0,0.70)" : "rgba(0,0,0,0.20)",
+                                    i === active
+                                      ? "rgba(63,75,36,0.72)"
+                                      : "rgba(63,75,36,0.22)",
                                 }}
                               />
                             ))}
                           </div>
                         </div>
 
-                        {/* Miniaturas */}
+                        {/* Miniaturas (menos “card”, más “impreso”) */}
                         <div
                           style={{
                             flex: "0 0 auto",
@@ -361,43 +364,46 @@ export default function InvitacionPrincipal() {
                           }}
                         >
                           <div style={{ display: "flex", gap: 10 }}>
-                            {slides.map((src, i) => (
-                              <button
-                                key={`${src}-${i}`}
-                                type="button"
-                                onClick={() => setActive(i)}
-                                aria-label={`Seleccionar foto ${i + 1}`}
-                                style={{
-                                  flex: "0 0 auto",
-                                  border:
-                                    i === active
-                                      ? "2px solid rgba(0,0,0,0.55)"
-                                      : "1px solid rgba(0,0,0,0.10)",
-                                  borderRadius: 14,
-                                  overflow: "hidden",
-                                  padding: 0,
-                                  background: "white",
-                                  cursor: "pointer",
-                                  boxShadow:
-                                    i === active
-                                      ? "0 14px 35px rgba(0,0,0,0.14)"
-                                      : "0 10px 25px rgba(0,0,0,0.08)",
-                                }}
-                              >
-                                <img
-                                  src={src}
-                                  onError={onImgError}
-                                  alt={`Mini ${i + 1}`}
-                                  draggable={false}
+                            {slides.map((src, i) => {
+                              const selected = i === active;
+                              return (
+                                <button
+                                  key={`${src}-${i}`}
+                                  type="button"
+                                  onClick={() => setActive(i)}
+                                  aria-label={`Seleccionar foto ${i + 1}`}
                                   style={{
-                                    width: isMobile ? 86 : 96,
-                                    height: isMobile ? 66 : 72,
-                                    objectFit: "cover",
-                                    display: "block",
+                                    flex: "0 0 auto",
+                                    border: selected
+                                      ? "2px solid rgba(63,75,36,0.55)"
+                                      : "1px solid rgba(0,0,0,0.10)",
+                                    borderRadius: 10,
+                                    overflow: "hidden",
+                                    padding: 0,
+                                    background: "rgba(255,255,255,0.85)",
+                                    cursor: "pointer",
+                                    boxShadow: "none",
+                                    transform: selected ? "translateY(-1px)" : "none",
+                                    transition: "transform 160ms ease, border-color 160ms ease",
                                   }}
-                                />
-                              </button>
-                            ))}
+                                >
+                                  <img
+                                    src={src}
+                                    onError={onImgError}
+                                    alt={`Mini ${i + 1}`}
+                                    draggable={false}
+                                    style={{
+                                      width: isMobile ? 82 : 94,
+                                      height: isMobile ? 62 : 70,
+                                      objectFit: "cover",
+                                      display: "block",
+                                      filter: selected ? "none" : "saturate(0.95)",
+                                      opacity: selected ? 1 : 0.92,
+                                    }}
+                                  />
+                                </button>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>
