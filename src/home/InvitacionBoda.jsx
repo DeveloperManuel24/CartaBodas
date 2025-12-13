@@ -132,9 +132,7 @@ export default function InvitacionBoda() {
         <div data-aos="fade-up">
           <InvitacionPrincipal />
         </div>
-        <div data-aos="fade-right">
-          <Galeria setSelectedImage={setSelectedImage} />
-        </div>
+        
         <div data-aos="fade-left">
           <Padres invitados={invitados} />
         </div>
@@ -144,16 +142,9 @@ export default function InvitacionBoda() {
         <div data-aos="fade-up">
           <CeremoniaRecepcion />
         </div>
-        <div data-aos="fade-up">
-          <Confirmacion />
-        </div>
-        <div data-aos="fade-up">
-          <Despedida />
-        </div>
-        <ModalImagen
-          selectedImage={selectedImage}
-          setSelectedImage={setSelectedImage}
-        />
+        
+        
+        
       </div>
     </div>
   );
