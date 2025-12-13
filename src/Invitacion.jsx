@@ -1,93 +1,93 @@
-import React from "react";
+// src/Invitacion.jsx
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Document, Page, pdfjs } from "react-pdf";
+
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
+
+import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 export default function Invitacion() {
   const navigate = useNavigate();
 
+  const wrapRef = useRef(null);
+  const [wrapSize, setWrapSize] = useState({ w: 0, h: 0 });
+  const [pageSize, setPageSize] = useState({ w: 0, h: 0 });
+  const [pdfError, setPdfError] = useState(null);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+
+    const ro = new ResizeObserver(() => {
+      setWrapSize({ w: el.clientWidth, h: el.clientHeight });
+    });
+
+    ro.observe(el);
+    setWrapSize({ w: el.clientWidth, h: el.clientHeight });
+
+    return () => ro.disconnect();
+  }, []);
+
+  const scale = useMemo(() => {
+    if (!wrapSize.w || !wrapSize.h || !pageSize.w || !pageSize.h) return 1;
+
+    const sW = wrapSize.w / pageSize.w;
+    const sH = wrapSize.h / pageSize.h;
+
+    return Math.min(sW, sH) * 0.995;
+  }, [wrapSize, pageSize]);
+
   return (
-    <div
-      className="relative min-h-screen w-full flex items-center justify-center"
-      style={{
-        backgroundImage: "url('/1.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      {/* Capa translúcida difuminada en toda la pantalla */}
+    <div className="min-h-screen w-full bg-[#dfeee7]">
       <div
-        className="absolute inset-0 bg-white/40 z-10"
-        style={{
-          backdropFilter: "blur(1px)",
-          WebkitBackdropFilter: "blur(6px)",
-        }}
-      />
-
-      {/* Contenido encima del fondo difuminado */}
-      <div className="relative z-20 text-center px-6 py-12 max-w-3xl">
-        {/* Nombres */}
-        <div className="mb-10">
-          <p
-            className="text-7xl md:text-8xl mb-4 leading-tight"
-            style={{
-              fontFamily: "'Dancing Script', cursive",
-              color: "#D4AF37",
-              fontWeight: 700, // Más grueso
-              WebkitTextStroke: "0.3px #D4AF37", // Contorno sutil
-              textShadow: "0 1px 1px rgba(0,0,0,0.2)", // Profundidad
-            }}
+        ref={wrapRef}
+        className="relative mx-auto h-[100svh] w-full max-w-[1100px] overflow-hidden flex items-center justify-center px-3 md:px-6"
+      >
+        <div className="relative z-10">
+          <Document
+            file="/cover.pdf"
+            onLoadError={(err) =>
+              setPdfError(err?.message || "No se pudo cargar el PDF.")
+            }
+            loading={<div className="text-gray-700">Cargando…</div>}
+            error={
+              <div className="text-center text-gray-800">
+                <div className="mb-2">No se pudo cargar el PDF.</div>
+                <div className="text-sm opacity-80">{pdfError}</div>
+              </div>
+            }
           >
-            Mario
-          </p>
-          <div className="flex items-center justify-center my-4">
-            <div className="w-12 h-px bg-gray-400"></div>
-            <span
-              className="text-xl text-gray-500 mx-4"
-              style={{
-                fontFamily: "'Playfair Display', serif",
+            <Page
+              pageNumber={1}
+              scale={scale}
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+              onLoadSuccess={(page) => {
+                const vp = page.getViewport({ scale: 1 });
+                setPageSize({ w: vp.width, h: vp.height });
               }}
-            >
-              &
-            </span>
-            <div className="w-12 h-px bg-gray-400"></div>
-          </div>
-          <p
-            className="text-7xl md:text-8xl leading-tight"
-            style={{
-              fontFamily: "'Dancing Script', cursive",
-              color: "#D4AF37",
-              fontWeight: 700,
-              WebkitTextStroke: "0.3px #D4AF37",
-              textShadow: "0 1px 1px rgba(0,0,0,0.2)",
-            }}
-          >
-            Andrea
-          </p>
-        </div>
+            />
+          </Document>
 
-        {/* Fecha */}
-        <div className="mb-10">
-          <p
-            className="text-base md:text-lg text-gray-600 tracking-[0.3em]"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-            }}
-          >
-            28 | FEBRERO | 2026
-          </p>
+          {/* ✅ HITBOX arriba: sobre el "INGRESAR" (texto) */}
+          <button
+            type="button"
+            aria-label="Ingresar"
+            onClick={() => navigate("/boda")}
+            className="
+              absolute
+              left-1/2 -translate-x-1/2
+              top-[38%] -translate-y-1/2
+              w-[min(260px,60vw)] h-10
+              opacity-0 cursor-pointer
+              focus-visible:opacity-20
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70
+            "
+          />
         </div>
-
-        {/* Botón */}
-        <button
-          onClick={() => navigate("/boda")}
-          className="relative inline-flex items-center justify-center w-48 h-12 font-medium group"
-        >
-          <span className="absolute w-48 h-0.5 bg-gray-400 top-0 left-0 transform group-hover:scale-x-0 transition-transform duration-300"></span>
-          <span className="absolute w-48 h-0.5 bg-gray-400 bottom-0 right-0 transform group-hover:scale-x-0 transition-transform duration-300"></span>
-          <span className="relative text-gray-700 group-hover:text-gray-900 tracking-[0.3em] text-sm">
-            INGRESAR
-          </span>
-        </button>
       </div>
     </div>
   );

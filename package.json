@@ -12,8 +12,10 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
     "aos": "^2.3.4",
+    "pdfjs-dist": "^5.4.296",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-pdf": "^10.2.0",
     "react-player": "^3.0.0",
     "react-router-dom": "^7.6.3",
     "tailwindcss": "^4.1.11"
