@@ -4,10 +4,6 @@ import { useNavigate } from "react-router-dom";
 export default function Invitacion() {
   const navigate = useNavigate();
 
-  // 🔧 AJUSTES RÁPIDOS
-  const TITLE_SCALE = 2.0; // 👈 subí esto (1.3 / 1.5 / 1.7)
-  const TITLE_TOP = "15%";  // 👈 mové esto si querés (8% / 12% / etc)
-
   return (
     <div className="relative w-full min-h-[100svh] overflow-hidden bg-black">
       {/* Fondo */}
@@ -41,56 +37,56 @@ export default function Invitacion() {
         }}
       />
 
-      {/* Contenido (SIN max-w que te capaba) */}
-      <div className="relative z-10 min-h-[100svh] w-full">
-        <div className="relative h-[100svh] w-full">
-          {/* Mario & Andrea (IMAGEN transparente) */}
-          <div
-            className="absolute left-1/2 text-center select-none"
-            style={{
-              top: TITLE_TOP,
-              transform: `translateX(-50%) scale(${TITLE_SCALE})`,
-              transformOrigin: "top center",
-              pointerEvents: "none",
-            }}
-          >
-            <img
-              src="/mario_andrea_text_transparent.png"
-              alt="Mario & Andrea"
-              draggable={false}
-              className="
-    block
-    w-[min(98vw,1400px)] md:w-[min(92vw,1700px)] lg:w-[min(90vw,2200px)]
-    h-auto
-    drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]
-    select-none
-  "
-            />
+      {/* Contenido */}
+      <div className="relative z-10 min-h-[100svh] w-full flex flex-col items-center">
+        {/* Espacio superior */}
+        <div className="h-[10svh] lg:h-[12svh]" />
 
-          </div>
+        {/* Título (imagen transparente) */}
+        <img
+          src="/mario_andrea_text_transparent.png"
+          alt="Mario & Andrea"
+          draggable={false}
+          className="
+            block select-none pointer-events-none
+            drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]
+            w-[min(96vw,1100px)]
+            sm:w-[min(92vw,1100px)]
+            md:w-[min(88vw,1050px)]
+            lg:w-[min(78vw,1000px)]
+            xl:w-[min(70vw,980px)]
+            2xl:w-[min(62vw,950px)]
+            h-auto
+          "
+        />
 
-          {/* INGRESAR (click real) */}
-          <button
-            type="button"
-            aria-label="Ingresar"
-            onClick={() => navigate("/boda")}
-            className="absolute left-1/2 -translate-x-1/2 top-[33%] text-center"
-            style={{
-              fontFamily: "'Cinzel', serif",
-              letterSpacing: "0.50em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.82)",
-              textShadow: "0 2px 12px rgba(0,0,0,0.60)",
-              fontSize: "clamp(12px, 2.2vw, 18px)",
-              background: "transparent",
-              border: "0",
-              padding: "18px 26px",
-              cursor: "pointer",
-            }}
-          >
-            INGRESAR
-          </button>
-        </div>
+        {/* Separación (controla dónde cae INGRESAR) */}
+        <div className="h-[10svh] sm:h-[12svh] lg:h-[8svh]" />
+
+        {/* INGRESAR */}
+        <button
+          type="button"
+          aria-label="Ingresar"
+          onClick={() => navigate("/boda")}
+          className="text-center"
+          style={{
+            fontFamily: "'Cinzel', serif",
+            letterSpacing: "0.50em",
+            textTransform: "uppercase",
+            color: "rgba(255,255,255,0.82)",
+            textShadow: "0 2px 12px rgba(0,0,0,0.60)",
+            fontSize: "clamp(15px, 1.6vw, 24px)", // 👈 más bonito en PC
+            background: "transparent",
+            border: "0",
+            padding: "18px 26px",
+            cursor: "pointer",
+          }}
+        >
+          INGRESAR
+        </button>
+
+        {/* Relleno abajo para centrar visualmente */}
+        <div className="flex-1" />
       </div>
     </div>
   );
