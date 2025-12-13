@@ -1,92 +1,95 @@
-// src/Invitacion.jsx
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Document, Page, pdfjs } from "react-pdf";
-
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
-
-import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
-pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 export default function Invitacion() {
   const navigate = useNavigate();
 
-  const wrapRef = useRef(null);
-  const [wrapSize, setWrapSize] = useState({ w: 0, h: 0 });
-  const [pageSize, setPageSize] = useState({ w: 0, h: 0 });
-  const [pdfError, setPdfError] = useState(null);
-
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-
-    const ro = new ResizeObserver(() => {
-      setWrapSize({ w: el.clientWidth, h: el.clientHeight });
-    });
-
-    ro.observe(el);
-    setWrapSize({ w: el.clientWidth, h: el.clientHeight });
-
-    return () => ro.disconnect();
-  }, []);
-
-  const scale = useMemo(() => {
-    if (!wrapSize.w || !wrapSize.h || !pageSize.w || !pageSize.h) return 1;
-
-    const sW = wrapSize.w / pageSize.w;
-    const sH = wrapSize.h / pageSize.h;
-
-    return Math.min(sW, sH) * 0.995;
-  }, [wrapSize, pageSize]);
+  // 🔧 AJUSTES RÁPIDOS
+  const TITLE_SCALE = 2.0; // 👈 subí esto (1.3 / 1.5 / 1.7)
+  const TITLE_TOP = "15%";  // 👈 mové esto si querés (8% / 12% / etc)
 
   return (
-    <div className="min-h-screen w-full bg-[#dfeee7]">
+    <div className="relative w-full min-h-[100svh] overflow-hidden bg-black">
+      {/* Fondo */}
       <div
-        ref={wrapRef}
-        className="relative mx-auto h-[100svh] w-full max-w-[1100px] overflow-hidden flex items-center justify-center px-3 md:px-6"
-      >
-        <div className="relative z-10">
-          <Document
-            file="/cover.pdf"
-            onLoadError={(err) =>
-              setPdfError(err?.message || "No se pudo cargar el PDF.")
-            }
-            loading={<div className="text-gray-700">Cargando…</div>}
-            error={
-              <div className="text-center text-gray-800">
-                <div className="mb-2">No se pudo cargar el PDF.</div>
-                <div className="text-sm opacity-80">{pdfError}</div>
-              </div>
-            }
-          >
-            <Page
-              pageNumber={1}
-              scale={scale}
-              renderTextLayer={false}
-              renderAnnotationLayer={false}
-              onLoadSuccess={(page) => {
-                const vp = page.getViewport({ scale: 1 });
-                setPageSize({ w: vp.width, h: vp.height });
-              }}
-            />
-          </Document>
+        className="absolute inset-0"
+        style={{
+          backgroundImage: "url('/1.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          filter: "brightness(0.78) contrast(1.08)",
+          transform: "scale(1.02)",
+        }}
+      />
 
-          {/* ✅ HITBOX arriba: sobre el "INGRESAR" (texto) */}
+      {/* Degradado arriba */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.28) 35%, rgba(0,0,0,0.08) 60%, rgba(0,0,0,0) 78%)",
+        }}
+      />
+
+      {/* Micro-sombra donde está INGRESAR */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 44%, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0) 35%)",
+        }}
+      />
+
+      {/* Contenido (SIN max-w que te capaba) */}
+      <div className="relative z-10 min-h-[100svh] w-full">
+        <div className="relative h-[100svh] w-full">
+          {/* Mario & Andrea (IMAGEN transparente) */}
+          <div
+            className="absolute left-1/2 text-center select-none"
+            style={{
+              top: TITLE_TOP,
+              transform: `translateX(-50%) scale(${TITLE_SCALE})`,
+              transformOrigin: "top center",
+              pointerEvents: "none",
+            }}
+          >
+            <img
+              src="/mario_andrea_text_transparent.png"
+              alt="Mario & Andrea"
+              draggable={false}
+              className="
+    block
+    w-[min(98vw,1400px)] md:w-[min(92vw,1700px)] lg:w-[min(90vw,2200px)]
+    h-auto
+    drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]
+    select-none
+  "
+            />
+
+          </div>
+
+          {/* INGRESAR (click real) */}
           <button
             type="button"
             aria-label="Ingresar"
             onClick={() => navigate("/boda")}
-            className="
-              absolute
-              left-1/2 -translate-x-1/2
-              top-[38%] -translate-y-1/2
-              w-[min(260px,60vw)] h-10
-              opacity-0 cursor-pointer
-              focus-visible:opacity-20
-              focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70
-            "
-          />
+            className="absolute left-1/2 -translate-x-1/2 top-[33%] text-center"
+            style={{
+              fontFamily: "'Cinzel', serif",
+              letterSpacing: "0.50em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.82)",
+              textShadow: "0 2px 12px rgba(0,0,0,0.60)",
+              fontSize: "clamp(12px, 2.2vw, 18px)",
+              background: "transparent",
+              border: "0",
+              padding: "18px 26px",
+              cursor: "pointer",
+            }}
+          >
+            INGRESAR
+          </button>
         </div>
       </div>
     </div>
