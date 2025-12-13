@@ -10,7 +10,7 @@ export default function Invitacion() {
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage: "url('/PORTADA.jpg')",
+          backgroundImage: "url('/PORTADA.jpeg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
