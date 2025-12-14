@@ -42,23 +42,25 @@ export default function Invitacion() {
         {/* Espacio superior */}
         <div className="h-[10svh] lg:h-[12svh]" />
 
-        {/* Título (imagen transparente) */}
-        <img
-          src="/mario_andrea_text_transparent.png"
-          alt="Mario & Andrea"
-          draggable={false}
-          className="
-            block select-none pointer-events-none
-            drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]
-            w-[min(96vw,1100px)]
-            sm:w-[min(92vw,1100px)]
-            md:w-[min(88vw,1050px)]
-            lg:w-[min(78vw,1000px)]
-            xl:w-[min(70vw,980px)]
-            2xl:w-[min(62vw,950px)]
-            h-auto
-          "
-        />
+        {/* Título (TEXTO, reemplaza imagen) */}
+        <div
+          className="select-none pointer-events-none text-center"
+          style={{
+            // Si algún día metés la fuente real como archivo, dejala primero:
+            // fontFamily: "'EdwardianScriptITC', 'Great Vibes', cursive",
+            fontFamily: "'Great Vibes', cursive",
+            color: "rgba(255,255,255,0.98)",
+            textShadow: "0 2px 14px rgba(0,0,0,0.55)",
+            lineHeight: 0.95,
+            letterSpacing: "0.02em",
+
+            // Tamaño y “ancho” visual similar a tu PNG
+            fontSize: "clamp(44px, 7.2vw, 120px)",
+            width: "min(96vw, 1100px)",
+          }}
+        >
+          Mario&nbsp;&amp;&nbsp;Andrea
+        </div>
 
         {/* Separación (controla dónde cae INGRESAR) */}
         <div className="h-[10svh] sm:h-[12svh] lg:h-[8svh]" />
@@ -75,7 +77,7 @@ export default function Invitacion() {
             textTransform: "uppercase",
             color: "rgba(255,255,255,0.82)",
             textShadow: "0 2px 12px rgba(0,0,0,0.60)",
-            fontSize: "clamp(15px, 1.6vw, 24px)", // 👈 más bonito en PC
+            fontSize: "clamp(15px, 1.6vw, 24px)",
             background: "transparent",
             border: "0",
             padding: "18px 26px",

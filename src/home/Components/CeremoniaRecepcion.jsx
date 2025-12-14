@@ -32,8 +32,8 @@ export default function InvitacionPrincipal() {
 
   const TAPE_DESKTOP_TOP = "40%";
   const TAPE_DESKTOP_LEFT = "50%";
-  const TAPE_DESKTOP_W = "88%";
-  const TAPE_DESKTOP_H = 560;
+  const TAPE_DESKTOP_W = "90%";
+  const TAPE_DESKTOP_H = 1000;
 
   const TAPE_MOBILE_SHIFT_X = "0%";
   const TAPE_MOBILE_SHIFT_Y = "0%";
