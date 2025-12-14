@@ -17,8 +17,9 @@ export default function InvitacionPrincipal() {
   // =============================
   // DATOS DIRECCIÓN / EVENTO (TOCÁ SOLO ESTO)
   // =============================
+  // Ajustado a "El Encinal" (según lo que te aparece en el PDF/captura)
   const ADDRESS_TEXT =
-    "Salón del Reino de los Testigos de Jehová Congregación El Pincinal, Entre 15 Avenida B y 12 Avenida, Colonia La Alemana, zona 7, 01057, Mixco, Guatemala";
+    "Salón del Reino de los Testigos de Jehová Congregación El Encinal, Entre 15 Avenida B y 12 Avenida, Colonia La Alemana, zona 7, 01057, Mixco, Guatemala";
 
   const EVENT_TITLE = "Boda Mario & Andrea";
   const EVENT_DETAILS = "¡Te esperamos para celebrar con nosotros!";
@@ -27,20 +28,28 @@ export default function InvitacionPrincipal() {
   const EVENT_START_LOCAL = "20260228T100000";
   const EVENT_END_LOCAL = "20260228T120000";
 
+  // ✅ WAZE EXACTO (si ya tenés el link compartido y querés que sea 1:1)
+  // Si no querés usarlo, dejalo vacío "" y usa búsqueda por texto (q=ADDRESS_TEXT)
+  const WAZE_EXACT_WEB_URL =
+    "https://www.waze.com/live-map/meeting?token=vKyrVKJMB5oKZPfP6w-sd&locale=es-419&env=row&utm_campaign=share_drive&utm_source=waze_app&utm_medium=undefined";
+
+  // ✅ OPCIONAL: si algún día sacás coordenadas, esto es lo más exacto del planeta:
+  // const WAZE_COORDS = { lat: 14.65, lon: -90.56 }; // ejemplo
+  const WAZE_COORDS = null; // <-- dejalo null si no tenés coords
+
   // =============================
   // AJUSTES POR PORCENTAJE (TOCÁ SOLO ESTO)
   // =============================
 
   // --- Overlay NOMBRES INVITADOS sobre página 1 ---
-  // OJO: ahora soporta múltiples líneas.
   const NAME_MOBILE_TOP = "16%";
   const NAME_MOBILE_LEFT = "50%";
   const NAME_MOBILE_W = "92%";
-  const NAME_MOBILE_MIN_H = 90; // altura mínima (px)
-  const NAME_MOBILE_FONT = 40;  // base
-  const NAME_MOBILE_MIN_FONT = 22; // límite para que no se vuelva micro
+  const NAME_MOBILE_MIN_H = 90;
+  const NAME_MOBILE_FONT = 40;
+  const NAME_MOBILE_MIN_FONT = 22;
   const NAME_MOBILE_LINE_HEIGHT = 1.02;
-  const NAME_MOBILE_GAP = 6; // px entre invitados
+  const NAME_MOBILE_GAP = 6;
 
   const NAME_DESKTOP_TOP = "17%";
   const NAME_DESKTOP_LEFT = "50%";
@@ -92,9 +101,9 @@ export default function InvitacionPrincipal() {
   const CAL_DESKTOP = { top: "90%", left: "63%", w: "10%", hPx: 100 };
 
   // =============================
-  // INVITADOS (URL + localStorage)  ✅ AHORA TRAE TODOS
+  // INVITADOS (URL + localStorage)
   // =============================
-  const [guests, setGuests] = useState([]); // array de strings
+  const [guests, setGuests] = useState([]);
 
   useEffect(() => {
     const safeDecode = (v) => {
@@ -124,13 +133,12 @@ export default function InvitacionPrincipal() {
     const fromUrl = () => {
       const params = new URLSearchParams(window.location.search);
 
-      // soporta repetición: ?invitado=A&invitado=B
-      const many =
-        params.getAll("invitado").concat(params.getAll("guest")).concat(params.getAll("nombreCompleto"));
+      const many = params
+        .getAll("invitado")
+        .concat(params.getAll("guest"))
+        .concat(params.getAll("nombreCompleto"));
 
-      // soporta: ?invitados=A,B,C o JSON encoded
       const invitadoPack = params.get("invitados");
-
       const nombre = params.get("nombre");
       const apellido = params.get("apellido");
 
@@ -143,7 +151,6 @@ export default function InvitacionPrincipal() {
 
       if (invitadoPack) {
         const raw = safeDecode(invitadoPack);
-        // intenta JSON primero
         try {
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed)) {
@@ -156,7 +163,6 @@ export default function InvitacionPrincipal() {
             if (n) out.push(n);
           }
         } catch {
-          // fallback CSV
           raw
             .split(",")
             .map((x) => normalize(x))
@@ -206,12 +212,8 @@ export default function InvitacionPrincipal() {
       return out;
     };
 
-    // URL manda, storage complementa
-    const list = [...fromUrl(), ...fromStorage()]
-      .map(normalize)
-      .filter(Boolean);
+    const list = [...fromUrl(), ...fromStorage()].map(normalize).filter(Boolean);
 
-    // dedupe simple (case-insensitive)
     const seen = new Set();
     const uniq = [];
     for (const g of list) {
@@ -386,10 +388,13 @@ export default function InvitacionPrincipal() {
   );
 
   const boxWidthPx = useMemo(() => pctToPx(preset.wPct), [pctToPx, preset.wPct]);
-  const nameWidthPx = useMemo(() => pctToPx(preset.nameWPct), [pctToPx, preset.nameWPct]);
+  const nameWidthPx = useMemo(
+    () => pctToPx(preset.nameWPct),
+    [pctToPx, preset.nameWPct]
+  );
 
   // =============================
-  // AUTO-SCALE DEL NOMBRE ✅ (para que no se “apachurre” ni se recorte)
+  // AUTO-SCALE DEL NOMBRE
   // =============================
   const nameFontPx = useMemo(() => {
     if (!guests.length) return preset.nameFont;
@@ -400,13 +405,11 @@ export default function InvitacionPrincipal() {
     const lines = guests.length;
     const maxLen = guests.reduce((m, g) => Math.max(m, g.length), 0);
 
-    // factor por cantidad de líneas
     let factor = 1;
-    if (lines === 2) factor *= 0.80;
-    if (lines === 3) factor *= 0.70;
+    if (lines === 2) factor *= 0.8;
+    if (lines === 3) factor *= 0.7;
     if (lines >= 4) factor *= 0.62;
 
-    // factor por nombres muy largos
     if (maxLen > 18) factor *= 18 / maxLen;
 
     const size = Math.floor(base * factor);
@@ -416,7 +419,6 @@ export default function InvitacionPrincipal() {
   const nameHeightPx = useMemo(() => {
     if (!guests.length) return preset.nameMinHPx;
 
-    // altura necesaria aproximada para evitar corte
     const lines = guests.length;
     const lineH = nameFontPx * preset.nameLineHeight;
     const gap = preset.nameGap;
@@ -428,10 +430,14 @@ export default function InvitacionPrincipal() {
   // =============================
   // LINKS: WAZE + CALENDAR
   // =============================
-  const wazeWebUrl = useMemo(() => {
+  const wazeWebByTextUrl = useMemo(() => {
     const q = encodeURIComponent(ADDRESS_TEXT);
     return `https://waze.com/ul?q=${q}&navigate=yes`;
   }, [ADDRESS_TEXT]);
+
+  const wazeWebUrl = useMemo(() => {
+    return WAZE_EXACT_WEB_URL?.trim() ? WAZE_EXACT_WEB_URL.trim() : wazeWebByTextUrl;
+  }, [WAZE_EXACT_WEB_URL, wazeWebByTextUrl]);
 
   const googleCalendarUrl = useMemo(() => {
     const text = encodeURIComponent(EVENT_TITLE);
@@ -441,16 +447,28 @@ export default function InvitacionPrincipal() {
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&details=${details}&location=${location}`;
   }, [EVENT_TITLE, EVENT_DETAILS, EVENT_LOCATION, EVENT_START_LOCAL, EVENT_END_LOCAL]);
 
+  // Ojo: en móviles, window.open en setTimeout a veces lo bloquean.
+  // Este flujo hace fallback en la MISMA pestaña para que no se “muera” el click.
   const openWaze = useCallback(() => {
-    const q = encodeURIComponent(ADDRESS_TEXT);
-    const deepLink = `waze://?q=${q}&navigate=yes`;
+    let deepLink = "";
+    let fallback = wazeWebUrl;
+
+    if (WAZE_COORDS && typeof WAZE_COORDS.lat === "number" && typeof WAZE_COORDS.lon === "number") {
+      const ll = `${WAZE_COORDS.lat},${WAZE_COORDS.lon}`;
+      deepLink = `waze://?ll=${encodeURIComponent(ll)}&navigate=yes`;
+      fallback = `https://waze.com/ul?ll=${encodeURIComponent(ll)}&navigate=yes`;
+    } else {
+      const q = encodeURIComponent(ADDRESS_TEXT);
+      deepLink = `waze://?q=${q}&navigate=yes`;
+      // fallback ya lo tenés (exact meeting link o búsqueda por texto)
+    }
 
     window.location.href = deepLink;
 
     setTimeout(() => {
-      window.open(wazeWebUrl, "_blank", "noopener,noreferrer");
+      window.location.href = fallback;
     }, 700);
-  }, [ADDRESS_TEXT, wazeWebUrl]);
+  }, [ADDRESS_TEXT, wazeWebUrl, WAZE_COORDS]);
 
   const openCalendar = useCallback(() => {
     window.open(googleCalendarUrl, "_blank", "noopener,noreferrer");
@@ -491,7 +509,7 @@ export default function InvitacionPrincipal() {
                   />
 
                   {/* =========================
-                      OVERLAY: NOMBRES INVITADOS ✅ MULTI-LÍNEA
+                      OVERLAY: NOMBRES INVITADOS
                      ========================= */}
                   {!!guests.length && (
                     <div
@@ -520,7 +538,6 @@ export default function InvitacionPrincipal() {
                             lineHeight: preset.nameLineHeight,
                             color: "#3f4b24",
                             fontWeight: 400,
-                            // clave: permitir varias líneas sin recorte
                             whiteSpace: "normal",
                             overflow: "visible",
                             wordBreak: "break-word",

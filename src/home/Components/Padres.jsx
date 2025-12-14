@@ -17,8 +17,9 @@ export default function InvitacionPrincipal2() {
   // =============================
   // DATOS DIRECCIÓN / EVENTO (TOCÁ SOLO ESTO)
   // =============================
+  // ✅ Dirección EXACTA (la de la imagen)
   const ADDRESS_TEXT =
-    "Salón del Reino de los Testigos de Jehová Congregación El Pincinal, Entre 15 Avenida B y 12 Avenida, Colonia La Alemana, zona 7, 01057, Mixco, Guatemala";
+    "Club Campestre La Montaña, Km. 18.5 Carretera a San Juan Sacatepequez, Zona 6, Mixco.";
 
   const EVENT_TITLE = "Boda Mario & Andrea";
   const EVENT_DETAILS = "¡Te esperamos para celebrar con nosotros!";
@@ -32,6 +33,10 @@ export default function InvitacionPrincipal2() {
   const ZOOM_WEB_URL =
     "https://us02web.zoom.us/j/2326987913?pwd=A2LRCE9PEGFCEFBLAOS5RRV1T25UUT09&omn=81836695375";
 
+  // ✅ WAZE (LINK EXACTO COMO LO PASASTE)
+  const WAZE_MEETING_URL =
+    "https://www.waze.com/live-map/meeting?token=odC8fegcj7wK4Fgj0A-sd&locale=es-419&env=row&utm_campaign=share_drive&utm_source=waze_app&utm_medium=undefined";
+
   // =============================
   // AJUSTES POR PORCENTAJE (TOCÁ SOLO ESTO)
   // =============================
@@ -43,7 +48,7 @@ export default function InvitacionPrincipal2() {
   const CAL_MOBILE = { top: "78%", left: "63%", w: "16%", hPx: 56 };
   const CAL_DESKTOP = { top: "78%", left: "63%", w: "10%", hPx: 100 };
 
-  // ✅ Hotspot ZOOM (ajustá sobre el icono/texto de Zoom en el PDF)
+  // ✅ Hotspot ZOOM
   const ZOOM_MOBILE = { top: "32%", left: "45%", w: "70%", hPx: 56 };
   const ZOOM_DESKTOP = { top: "32%", left: "45%", w: "70%", hPx: 100 };
 
@@ -96,32 +101,20 @@ export default function InvitacionPrincipal2() {
   );
 
   // =============================
-  // LINKS: WAZE + CALENDAR + ZOOM
+  // LINKS: CALENDAR + ZOOM
   // =============================
-  const wazeWebUrl = useMemo(() => {
-    const q = encodeURIComponent(ADDRESS_TEXT);
-    return `https://waze.com/ul?q=${q}&navigate=yes`;
-  }, [ADDRESS_TEXT]);
-
   const googleCalendarUrl = useMemo(() => {
     const text = encodeURIComponent(EVENT_TITLE);
     const details = encodeURIComponent(EVENT_DETAILS);
     const location = encodeURIComponent(EVENT_LOCATION);
     const dates = `${EVENT_START_LOCAL}/${EVENT_END_LOCAL}`;
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&details=${details}&location=${location}`;
-  }, [
-    EVENT_TITLE,
-    EVENT_DETAILS,
-    EVENT_LOCATION,
-    EVENT_START_LOCAL,
-    EVENT_END_LOCAL,
-  ]);
+  }, [EVENT_TITLE, EVENT_DETAILS, EVENT_LOCATION, EVENT_START_LOCAL, EVENT_END_LOCAL]);
 
   // Deep link Zoom (derivado del link web)
   const zoomDeepLink = useMemo(() => {
     try {
       const u = new URL(ZOOM_WEB_URL);
-      // /j/2326987913
       const parts = u.pathname.split("/").filter(Boolean);
       const jIndex = parts.findIndex((p) => p === "j");
       const confno = jIndex >= 0 ? parts[jIndex + 1] : "";
@@ -150,22 +143,27 @@ export default function InvitacionPrincipal2() {
     }
   }, [zoomDeepLink]);
 
+  // =============================
+  // ACTIONS
+  // =============================
+  // ✅ Waze igual que el anterior: intenta app con waze://, fallback a TU link meeting en misma pestaña
   const openWaze = useCallback(() => {
+    // Intento abrir app (usa tu dirección como query; si no abre, cae al link meeting)
     const q = encodeURIComponent(ADDRESS_TEXT);
     const deepLink = `waze://?q=${q}&navigate=yes`;
 
     window.location.href = deepLink;
 
     setTimeout(() => {
-      window.open(wazeWebUrl, "_blank", "noopener,noreferrer");
+      window.location.href = WAZE_MEETING_URL;
     }, 700);
-  }, [ADDRESS_TEXT, wazeWebUrl]);
+  }, [ADDRESS_TEXT, WAZE_MEETING_URL]);
 
   const openCalendar = useCallback(() => {
     window.open(googleCalendarUrl, "_blank", "noopener,noreferrer");
   }, [googleCalendarUrl]);
 
-  // ✅ Zoom robusto: intenta app, y solo hace fallback a web si NO se abrió la app.
+  // ✅ Zoom robusto: intenta app, fallback a web solo si no se abrió la app
   const openZoom = useCallback(() => {
     const ua = navigator.userAgent || "";
     const isAndroid = /Android/i.test(ua);
@@ -179,7 +177,6 @@ export default function InvitacionPrincipal2() {
       return;
     }
 
-    // Fallback solo si la app no se abrió (la página sigue visible)
     setTimeout(() => {
       if (!document.hidden) {
         window.location.href = ZOOM_WEB_URL;
