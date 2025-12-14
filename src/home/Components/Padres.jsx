@@ -24,20 +24,28 @@ export default function InvitacionPrincipal2() {
   const EVENT_DETAILS = "¡Te esperamos para celebrar con nosotros!";
   const EVENT_LOCATION = ADDRESS_TEXT;
 
-  // 28 Feb 2026 — ejemplo 10:00 a.m. a 12:00 p.m. (local)
+  // 28 Feb 2026 — 10:00 a.m. a 12:00 p.m. (local)
   const EVENT_START_LOCAL = "20260228T100000";
   const EVENT_END_LOCAL = "20260228T120000";
+
+  // ✅ ZOOM (TOCÁ SOLO ESTO)
+  const ZOOM_WEB_URL =
+    "https://us02web.zoom.us/j/2326987913?pwd=A2LRCE9PEGFCEFBLAOS5RRV1T25UUT09&omn=81836695375";
 
   // =============================
   // AJUSTES POR PORCENTAJE (TOCÁ SOLO ESTO)
   // =============================
-  // ✅ Hotspot WAZE (posición sobre el icono en el PDF)
+  // ✅ Hotspot WAZE
   const WAZE_MOBILE = { top: "78%", left: "39%", w: "16%", hPx: 56 };
   const WAZE_DESKTOP = { top: "78%", left: "38%", w: "10%", hPx: 100 };
 
-  // ✅ Hotspot CALENDARIO (posición sobre el icono en el PDF)
+  // ✅ Hotspot CALENDARIO
   const CAL_MOBILE = { top: "78%", left: "63%", w: "16%", hPx: 56 };
   const CAL_DESKTOP = { top: "78%", left: "63%", w: "10%", hPx: 100 };
+
+  // ✅ Hotspot ZOOM (ajustá sobre el icono/texto de Zoom en el PDF)
+  const ZOOM_MOBILE = { top: "32%", left: "45%", w: "70%", hPx: 56 };
+  const ZOOM_DESKTOP = { top: "32%", left: "45%", w: "70%", hPx: 100 };
 
   // =============================
   // RESPONSIVE PDF
@@ -66,9 +74,17 @@ export default function InvitacionPrincipal2() {
 
   const preset = useMemo(() => {
     return isMobile
-      ? { waze: WAZE_MOBILE, cal: CAL_MOBILE }
-      : { waze: WAZE_DESKTOP, cal: CAL_DESKTOP };
-  }, [isMobile]);
+      ? { waze: WAZE_MOBILE, cal: CAL_MOBILE, zoom: ZOOM_MOBILE }
+      : { waze: WAZE_DESKTOP, cal: CAL_DESKTOP, zoom: ZOOM_DESKTOP };
+  }, [
+    isMobile,
+    WAZE_MOBILE,
+    WAZE_DESKTOP,
+    CAL_MOBILE,
+    CAL_DESKTOP,
+    ZOOM_MOBILE,
+    ZOOM_DESKTOP,
+  ]);
 
   const pctToPx = useCallback(
     (pctStr) => {
@@ -80,7 +96,7 @@ export default function InvitacionPrincipal2() {
   );
 
   // =============================
-  // LINKS: WAZE + CALENDAR
+  // LINKS: WAZE + CALENDAR + ZOOM
   // =============================
   const wazeWebUrl = useMemo(() => {
     const q = encodeURIComponent(ADDRESS_TEXT);
@@ -93,16 +109,53 @@ export default function InvitacionPrincipal2() {
     const location = encodeURIComponent(EVENT_LOCATION);
     const dates = `${EVENT_START_LOCAL}/${EVENT_END_LOCAL}`;
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&details=${details}&location=${location}`;
-  }, [EVENT_TITLE, EVENT_DETAILS, EVENT_LOCATION, EVENT_START_LOCAL, EVENT_END_LOCAL]);
+  }, [
+    EVENT_TITLE,
+    EVENT_DETAILS,
+    EVENT_LOCATION,
+    EVENT_START_LOCAL,
+    EVENT_END_LOCAL,
+  ]);
+
+  // Deep link Zoom (derivado del link web)
+  const zoomDeepLink = useMemo(() => {
+    try {
+      const u = new URL(ZOOM_WEB_URL);
+      // /j/2326987913
+      const parts = u.pathname.split("/").filter(Boolean);
+      const jIndex = parts.findIndex((p) => p === "j");
+      const confno = jIndex >= 0 ? parts[jIndex + 1] : "";
+      const pwd = u.searchParams.get("pwd") || "";
+
+      if (!confno) return "";
+      const q = new URLSearchParams();
+      q.set("confno", confno);
+      if (pwd) q.set("pwd", pwd);
+
+      return `zoommtg://zoom.us/join?${q.toString()}`;
+    } catch {
+      return "";
+    }
+  }, [ZOOM_WEB_URL]);
+
+  // Android intent (mejor tasa de éxito para abrir app)
+  const zoomAndroidIntent = useMemo(() => {
+    if (!zoomDeepLink) return "";
+    try {
+      const u = new URL(zoomDeepLink);
+      const qs = u.searchParams.toString();
+      return `intent://zoom.us/join?${qs}#Intent;scheme=zoommtg;package=us.zoom.videomeetings;end`;
+    } catch {
+      return "";
+    }
+  }, [zoomDeepLink]);
 
   const openWaze = useCallback(() => {
     const q = encodeURIComponent(ADDRESS_TEXT);
     const deepLink = `waze://?q=${q}&navigate=yes`;
 
-    // intento abrir app
     window.location.href = deepLink;
 
-    // fallback web
     setTimeout(() => {
       window.open(wazeWebUrl, "_blank", "noopener,noreferrer");
     }, 700);
@@ -111,6 +164,28 @@ export default function InvitacionPrincipal2() {
   const openCalendar = useCallback(() => {
     window.open(googleCalendarUrl, "_blank", "noopener,noreferrer");
   }, [googleCalendarUrl]);
+
+  // ✅ Zoom robusto: intenta app, y solo hace fallback a web si NO se abrió la app.
+  const openZoom = useCallback(() => {
+    const ua = navigator.userAgent || "";
+    const isAndroid = /Android/i.test(ua);
+
+    if (isAndroid && zoomAndroidIntent) {
+      window.location.href = zoomAndroidIntent;
+    } else if (zoomDeepLink) {
+      window.location.href = zoomDeepLink;
+    } else {
+      window.location.href = ZOOM_WEB_URL;
+      return;
+    }
+
+    // Fallback solo si la app no se abrió (la página sigue visible)
+    setTimeout(() => {
+      if (!document.hidden) {
+        window.location.href = ZOOM_WEB_URL;
+      }
+    }, 1200);
+  }, [ZOOM_WEB_URL, zoomDeepLink, zoomAndroidIntent]);
 
   return (
     <div className="w-full min-h-[100svh] bg-[#dfeee7] flex justify-center px-3 py-6">
@@ -132,7 +207,7 @@ export default function InvitacionPrincipal2() {
           {Array.from({ length: numPages }, (_, idx) => {
             const pageNumber = idx + 1;
 
-            // Hotspots solo sobre la página 1 (igual que el anterior)
+            // Hotspots solo sobre la página 1
             if (pageNumber === 1) {
               return (
                 <div
@@ -147,7 +222,7 @@ export default function InvitacionPrincipal2() {
                     renderAnnotationLayer={false}
                   />
 
-                  {/* ===== HOTSPOT: WAZE (click invisible sobre icono) ===== */}
+                  {/* ===== HOTSPOT: WAZE ===== */}
                   <button
                     type="button"
                     aria-label="Abrir Waze"
@@ -166,7 +241,26 @@ export default function InvitacionPrincipal2() {
                     }}
                   />
 
-                  {/* ===== HOTSPOT: CALENDARIO (click invisible sobre icono) ===== */}
+                  {/* ===== HOTSPOT: ZOOM ===== */}
+                  <button
+                    type="button"
+                    aria-label="Abrir Zoom"
+                    onClick={openZoom}
+                    className="absolute z-30"
+                    style={{
+                      top: preset.zoom.top,
+                      left: preset.zoom.left,
+                      width: `${pctToPx(preset.zoom.w)}px`,
+                      height: `${preset.zoom.hPx}px`,
+                      transform: "translate(-50%, -50%)",
+                      background: "transparent",
+                      border: 0,
+                      padding: 0,
+                      cursor: "pointer",
+                    }}
+                  />
+
+                  {/* ===== HOTSPOT: CALENDARIO ===== */}
                   <button
                     type="button"
                     aria-label="Agregar al calendario"
