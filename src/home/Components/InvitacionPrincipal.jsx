@@ -88,6 +88,12 @@ export default function InvitacionPrincipal() {
   const NAME_TAPE_OPACITY = 1;
   const NAME_TAPE_RADIUS = 0;
 
+  // ✅ NUEVO: expandir el cuadro blanco del nombre
+  const NAME_TAPE_PAD_X_MOBILE = 18;
+  const NAME_TAPE_PAD_Y_MOBILE = 30;
+  const NAME_TAPE_PAD_X_DESKTOP = 32;
+  const NAME_TAPE_PAD_Y_DESKTOP = 16;
+
   // --- Overlay ADULTOS/NIÑOS debajo del nombre ---
   const PAX_GAP_PX = 3;
   const PAX_MOBILE_FONT = 12;
@@ -193,11 +199,7 @@ export default function InvitacionPrincipal() {
 
     // ✅ base64 UTF-8 real (sin escape/unescape)
     const decodeBase64Utf8 = (b64) => {
-      let fixed = String(b64)
-        .trim()
-        .replace(/ /g, "+")
-        .replace(/-/g, "+")
-        .replace(/_/g, "/");
+      let fixed = String(b64).trim().replace(/ /g, "+").replace(/-/g, "+").replace(/_/g, "/");
       while (fixed.length % 4 !== 0) fixed += "=";
 
       const bin = atob(fixed);
@@ -234,10 +236,7 @@ export default function InvitacionPrincipal() {
             ? null
             : { adultos: Math.max(0, adultos ?? 0), ninos: Math.max(0, ninos ?? 0) };
 
-        const namesOut = invitados
-          .map((x) => buildFullName(x))
-          .map(normalize)
-          .filter(Boolean);
+        const namesOut = invitados.map((x) => buildFullName(x)).map(normalize).filter(Boolean);
 
         return { invitados: namesOut, pax: paxOut };
       } catch {
@@ -684,6 +683,12 @@ export default function InvitacionPrincipal() {
                           background: NAME_TAPE_BG,
                           opacity: NAME_TAPE_OPACITY,
                           borderRadius: `${NAME_TAPE_RADIUS}px`,
+
+                          // ✅ EXPANSIÓN del cuadro blanco del nombre
+                          padding: isMobile
+                            ? `${NAME_TAPE_PAD_Y_MOBILE}px ${NAME_TAPE_PAD_X_MOBILE}px`
+                            : `${NAME_TAPE_PAD_Y_DESKTOP}px ${NAME_TAPE_PAD_X_DESKTOP}px`,
+                          boxSizing: "border-box",
                         }}
                       >
                         <div
@@ -752,7 +757,9 @@ export default function InvitacionPrincipal() {
                           }}
                         >
                           <div>ADULTOS: {Number.isFinite(pax.adultos) ? pax.adultos : 0}</div>
-                          <div>{"NI\u00D1OS"}: {Number.isFinite(pax.ninos) ? pax.ninos : 0}</div>
+                          <div>
+                            {"NI\u00D1OS"}: {Number.isFinite(pax.ninos) ? pax.ninos : 0}
+                          </div>
                         </div>
                       </div>
                     </div>
