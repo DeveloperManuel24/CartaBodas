@@ -41,16 +41,16 @@ export default function InvitacionPrincipal2() {
   // AJUSTES POR PORCENTAJE (TOCÁ SOLO ESTO)
   // =============================
   // ✅ Hotspot WAZE
-  const WAZE_MOBILE = { top: "78%", left: "39%", w: "16%", hPx: 56 };
-  const WAZE_DESKTOP = { top: "78%", left: "38%", w: "10%", hPx: 100 };
+  const WAZE_MOBILE = { top: "83%", left: "39%", w: "16%", hPx: 56 };
+  const WAZE_DESKTOP = { top: "83%", left: "38%", w: "10%", hPx: 100 };
 
   // ✅ Hotspot CALENDARIO
-  const CAL_MOBILE = { top: "78%", left: "63%", w: "16%", hPx: 56 };
-  const CAL_DESKTOP = { top: "78%", left: "63%", w: "10%", hPx: 100 };
+  const CAL_MOBILE = { top: "83%", left: "63%", w: "16%", hPx: 56 };
+  const CAL_DESKTOP = { top: "83%", left: "63%", w: "10%", hPx: 100 };
 
   // ✅ Hotspot ZOOM
-  const ZOOM_MOBILE = { top: "32%", left: "45%", w: "70%", hPx: 56 };
-  const ZOOM_DESKTOP = { top: "32%", left: "45%", w: "70%", hPx: 100 };
+  const ZOOM_MOBILE = { top: "35%", left: "45%", w: "70%", hPx: 56 };
+  const ZOOM_DESKTOP = { top: "35%", left: "45%", w: "70%", hPx: 100 };
 
   // =============================
   // RESPONSIVE PDF
