@@ -10,7 +10,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 export default function InvitacionPrincipal() {
   // =============================
-  // CARGAR FUENTES (para que NO use fallback feo)
+  // CARGAR FUENTES
   // =============================
   useEffect(() => {
     const ensureLink = (id, rel, href) => {
@@ -56,19 +56,77 @@ export default function InvitacionPrincipal() {
   const WAZE_COORDS = null;
 
   // =============================
-  // AJUSTES POR PORCENTAJE (TOCÁ SOLO ESTO)
+  // AJUSTES POR PORCENTAJE
   // =============================
 
-  // --- Overlay NOMBRES INVITADOS sobre página 1 ---
+  // -----------------------------
+  // PHONE (<= 409px)
+  // -----------------------------
   const NAME_MOBILE_TOP = "15%";
   const NAME_MOBILE_LEFT = "50%";
   const NAME_MOBILE_W = "70%";
   const NAME_MOBILE_MIN_H = 1;
-  const NAME_MOBILE_FONT = 38;
+  const NAME_MOBILE_FONT = 34;
   const NAME_MOBILE_MIN_FONT = 22;
   const NAME_MOBILE_LINE_HEIGHT = 1.02;
   const NAME_MOBILE_GAP = 6;
 
+  const NAME_MOBILE_SHIFT_X = "0%";
+  const NAME_MOBILE_SHIFT_Y = "0%";
+
+  const PAX_MOBILE_FONT = 12;
+  const PAX_SHIFT_Y_MOBILE_PX = 10;
+
+  const MOBILE_TOP = "40%";
+  const MOBILE_LEFT = "50%";
+  const MOBILE_W = "40%";
+  const MOBILE_H = 50;
+
+  const MOBILE_SHIFT_X = "0%";
+  const MOBILE_SHIFT_Y = "0%";
+
+  const MOBILE_VALUE_SIZE = 18;
+  const MOBILE_LABEL_SIZE = 8;
+
+  const WAZE_MOBILE = { top: "90%", left: "40%", w: "16%", hPx: 56 };
+  const CAL_MOBILE = { top: "90%", left: "63%", w: "16%", hPx: 56 };
+
+  // -----------------------------
+  // PHONE XL (410px - 639px)  ✅ iPhone 12 Pro Max / 15 / etc.
+  // TOCÁ SOLO ESTO para esos teléfonos
+  // -----------------------------
+  const NAME_PHONE_XL_TOP = "14%";
+  const NAME_PHONE_XL_LEFT = "50%";
+  const NAME_PHONE_XL_W = "68%";
+  const NAME_PHONE_XL_MIN_H = 1;
+  const NAME_PHONE_XL_FONT = 44;
+  const NAME_PHONE_XL_MIN_FONT = 24;
+  const NAME_PHONE_XL_LINE_HEIGHT = 1.02;
+  const NAME_PHONE_XL_GAP = 7;
+
+  const NAME_PHONE_XL_SHIFT_X = "0%";
+  const NAME_PHONE_XL_SHIFT_Y = "0%";
+
+  const PAX_PHONE_XL_FONT = 13;
+  const PAX_SHIFT_Y_PHONE_XL_PX = 8;
+
+  const PHONE_XL_TOP = "39%";
+  const PHONE_XL_LEFT = "50%";
+  const PHONE_XL_W = "44%";
+  const PHONE_XL_H = 56;
+
+  const PHONE_XL_SHIFT_X = "0%";
+  const PHONE_XL_SHIFT_Y = "0%";
+
+  const PHONE_XL_VALUE_SIZE = 20;
+  const PHONE_XL_LABEL_SIZE = 9;
+
+  const WAZE_PHONE_XL = { top: "90%", left: "40%", w: "15%", hPx: 60 };
+  const CAL_PHONE_XL = { top: "90%", left: "63%", w: "15%", hPx: 60 };
+
+  // -----------------------------
+  // DESKTOP (>= 640px)
+  // -----------------------------
   const NAME_DESKTOP_TOP = "15%";
   const NAME_DESKTOP_LEFT = "50%";
   const NAME_DESKTOP_W = "70%";
@@ -78,74 +136,55 @@ export default function InvitacionPrincipal() {
   const NAME_DESKTOP_LINE_HEIGHT = 1.02;
   const NAME_DESKTOP_GAP = 8;
 
-  const NAME_MOBILE_SHIFT_X = "0%";
-  const NAME_MOBILE_SHIFT_Y = "0%";
   const NAME_DESKTOP_SHIFT_X = "0%";
   const NAME_DESKTOP_SHIFT_Y = "0%";
 
-  // Tape detrás del nombre (para tapar texto del PDF)
-  const NAME_TAPE_BG = "white";
-  const NAME_TAPE_OPACITY = 1;
-  const NAME_TAPE_RADIUS = 0;
-
-  // ✅ Expandir el cuadro blanco del nombre
-  const NAME_TAPE_PAD_X_MOBILE = 18;
-  const NAME_TAPE_PAD_Y_MOBILE = 30;
-  const NAME_TAPE_PAD_X_DESKTOP = 32;
-  const NAME_TAPE_PAD_Y_DESKTOP = 16;
-
-  // --- Overlay ADULTOS/NIÑOS debajo del nombre ---
-  const PAX_GAP_PX = 3;
-  const PAX_MOBILE_FONT = 12;
   const PAX_DESKTOP_FONT = 20;
-
-  // ✅ NUEVO: mover ADULTOS/NIÑOS (extra separación independiente del nombre)
-  // positivo = baja, negativo = sube
-  const PAX_SHIFT_Y_MOBILE_PX = 10;
   const PAX_SHIFT_Y_DESKTOP_PX = 3;
-
-  // Tape detrás del PAX
-  const PAX_TAPE_BG = "white";
-  const PAX_TAPE_OPACITY = 1;
-  const PAX_TAPE_RADIUS = 0;
-  const PAX_TAPE_PAD_Y = 0;
-  const PAX_TAPE_PAD_X = 10;
-
-  // --- Countdown overlay sobre página 1 ---
-  const MOBILE_TOP = "40%";
-  const MOBILE_LEFT = "50%";
-  const MOBILE_W = "40%";
-  const MOBILE_H = 50;
 
   const DESKTOP_TOP = "41%";
   const DESKTOP_LEFT = "50%";
   const DESKTOP_W = "46%";
   const DESKTOP_H = 90;
 
-  const MOBILE_SHIFT_X = "0%";
-  const MOBILE_SHIFT_Y = "0%";
   const DESKTOP_SHIFT_X = "0%";
   const DESKTOP_SHIFT_Y = "0%";
-
-  const MOBILE_VALUE_SIZE = 18;
-  const MOBILE_LABEL_SIZE = 8;
 
   const DESKTOP_VALUE_SIZE = 54;
   const DESKTOP_LABEL_SIZE = 14;
 
-  // --- Hotspot WAZE ---
-  const WAZE_MOBILE = { top: "90%", left: "40%", w: "16%", hPx: 56 };
   const WAZE_DESKTOP = { top: "90%", left: "38%", w: "10%", hPx: 100 };
-
-  // --- Hotspot CALENDARIO ---
-  const CAL_MOBILE = { top: "90%", left: "63%", w: "16%", hPx: 56 };
   const CAL_DESKTOP = { top: "90%", left: "63%", w: "10%", hPx: 100 };
+
+  // -----------------------------
+  // Tape detrás del nombre
+  // -----------------------------
+  const NAME_TAPE_BG = "white";
+  const NAME_TAPE_OPACITY = 1;
+  const NAME_TAPE_RADIUS = 0;
+
+  const NAME_TAPE_PAD_X_MOBILE = 18;
+  const NAME_TAPE_PAD_Y_MOBILE = 30;
+
+  const NAME_TAPE_PAD_X_PHONE_XL = 20;
+  const NAME_TAPE_PAD_Y_PHONE_XL = 26;
+
+  const NAME_TAPE_PAD_X_DESKTOP = 32;
+  const NAME_TAPE_PAD_Y_DESKTOP = 16;
+
+  // Tape detrás del PAX
+  const PAX_GAP_PX = 3;
+  const PAX_TAPE_BG = "white";
+  const PAX_TAPE_OPACITY = 1;
+  const PAX_TAPE_RADIUS = 0;
+  const PAX_TAPE_PAD_Y = 0;
+  const PAX_TAPE_PAD_X = 10;
 
   // =============================
   // INVITADOS + PAX (URL + localStorage)
   // =============================
   const [guests, setGuests] = useState([]);
-  const [pax, setPax] = useState(null); // { adultos: number, ninos: number } | null
+  const [pax, setPax] = useState(null);
 
   useEffect(() => {
     const fixMojibake = (s) => {
@@ -327,9 +366,7 @@ export default function InvitacionPrincipal() {
             if (n) out.push(n);
           }
         }
-      } catch {
-        // nada
-      }
+      } catch {}
       return out;
     };
 
@@ -359,9 +396,7 @@ export default function InvitacionPrincipal() {
           if (adultos === null && ninos === null) continue;
 
           return { adultos: Math.max(0, adultos ?? 0), ninos: Math.max(0, ninos ?? 0) };
-        } catch {
-          // seguir
-        }
+        } catch {}
       }
 
       return null;
@@ -397,7 +432,7 @@ export default function InvitacionPrincipal() {
   }, []);
 
   // =============================
-  // COUNTDOWN (28 FEB 2026)
+  // COUNTDOWN
   // =============================
   const [timeLeft, setTimeLeft] = useState({ days: "00", hours: "00", minutes: "00" });
 
@@ -425,7 +460,7 @@ export default function InvitacionPrincipal() {
   }, []);
 
   // =============================
-  // RESPONSIVE PDF
+  // RESPONSIVE PDF (ancho real)
   // =============================
   const wrapRef = useRef(null);
   const [wrapWidth, setWrapWidth] = useState(0);
@@ -435,11 +470,41 @@ export default function InvitacionPrincipal() {
     const el = wrapRef.current;
     if (!el) return;
 
-    const ro = new ResizeObserver(() => setWrapWidth(el.clientWidth));
-    ro.observe(el);
-    setWrapWidth(el.clientWidth);
+    const update = () => {
+      const docW = document.documentElement?.clientWidth || 0;
+      const winW = window.innerWidth || 0;
+      const vvW = window.visualViewport?.width || 0;
 
-    return () => ro.disconnect();
+      const viewportW = Math.min(...[docW, winW, vvW].filter((x) => Number.isFinite(x) && x > 0));
+      const rectW = el.getBoundingClientRect().width || 0;
+
+      const effective = Math.min(rectW || viewportW, viewportW || rectW || 360);
+      setWrapWidth(effective || 360);
+    };
+
+    update();
+
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+
+    window.addEventListener("resize", update);
+    const vv = window.visualViewport;
+    if (vv) {
+      vv.addEventListener("resize", update);
+      vv.addEventListener("scroll", update);
+    }
+
+    const raf = requestAnimationFrame(update);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+      if (vv) {
+        vv.removeEventListener("resize", update);
+        vv.removeEventListener("scroll", update);
+      }
+    };
   }, []);
 
   const pageWidth = useMemo(() => {
@@ -447,78 +512,126 @@ export default function InvitacionPrincipal() {
     return Math.min(wrapWidth, 1100);
   }, [wrapWidth]);
 
-  const isMobile = pageWidth < 640;
+  // ✅ 3 modos: phone / phoneXL / desktop
+  const mode = useMemo(() => {
+    if (pageWidth >= 640) return "desktop";
+    if (pageWidth >= 410) return "phoneXL";
+    return "phone";
+  }, [pageWidth]);
+
+  const pctToPx = useCallback(
+    (pctStr) => {
+      const pct = parseFloat(String(pctStr).replace("%", ""));
+      if (!pageWidth || Number.isNaN(pct)) return 0;
+      return Math.round((pct / 100) * pageWidth);
+    },
+    [pageWidth]
+  );
 
   const preset = useMemo(() => {
-    return isMobile
-      ? {
-          // name
-          nameTop: NAME_MOBILE_TOP,
-          nameLeft: NAME_MOBILE_LEFT,
-          nameWPct: NAME_MOBILE_W,
-          nameMinHPx: NAME_MOBILE_MIN_H,
-          nameFont: NAME_MOBILE_FONT,
-          nameMinFont: NAME_MOBILE_MIN_FONT,
-          nameLineHeight: NAME_MOBILE_LINE_HEIGHT,
-          nameGap: NAME_MOBILE_GAP,
-          nameShiftX: NAME_MOBILE_SHIFT_X,
-          nameShiftY: NAME_MOBILE_SHIFT_Y,
-          // pax
-          paxFont: PAX_MOBILE_FONT,
-          // countdown
-          top: MOBILE_TOP,
-          left: MOBILE_LEFT,
-          wPct: MOBILE_W,
-          hPx: MOBILE_H,
-          shiftX: MOBILE_SHIFT_X,
-          shiftY: MOBILE_SHIFT_Y,
-          valueSize: MOBILE_VALUE_SIZE,
-          labelSize: MOBILE_LABEL_SIZE,
-          colonSize: 32,
-          // hotspots
-          waze: WAZE_MOBILE,
-          cal: CAL_MOBILE,
-        }
-      : {
-          // name
-          nameTop: NAME_DESKTOP_TOP,
-          nameLeft: NAME_DESKTOP_LEFT,
-          nameWPct: NAME_DESKTOP_W,
-          nameMinHPx: NAME_DESKTOP_MIN_H,
-          nameFont: NAME_DESKTOP_FONT,
-          nameMinFont: NAME_DESKTOP_MIN_FONT,
-          nameLineHeight: NAME_DESKTOP_LINE_HEIGHT,
-          nameGap: NAME_DESKTOP_GAP,
-          nameShiftX: NAME_DESKTOP_SHIFT_X,
-          nameShiftY: NAME_DESKTOP_SHIFT_Y,
-          // pax
-          paxFont: PAX_DESKTOP_FONT,
-          // countdown
-          top: DESKTOP_TOP,
-          left: DESKTOP_LEFT,
-          wPct: DESKTOP_W,
-          hPx: DESKTOP_H,
-          shiftX: DESKTOP_SHIFT_X,
-          shiftY: DESKTOP_SHIFT_Y,
-          valueSize: DESKTOP_VALUE_SIZE,
-          labelSize: DESKTOP_LABEL_SIZE,
-          colonSize: 38,
-          // hotspots
-          waze: WAZE_DESKTOP,
-          cal: CAL_DESKTOP,
-        };
+    if (mode === "desktop") {
+      return {
+        // name
+        nameTop: NAME_DESKTOP_TOP,
+        nameLeft: NAME_DESKTOP_LEFT,
+        nameWPct: NAME_DESKTOP_W,
+        nameMinHPx: NAME_DESKTOP_MIN_H,
+        nameFont: NAME_DESKTOP_FONT,
+        nameMinFont: NAME_DESKTOP_MIN_FONT,
+        nameLineHeight: NAME_DESKTOP_LINE_HEIGHT,
+        nameGap: NAME_DESKTOP_GAP,
+        nameShiftX: NAME_DESKTOP_SHIFT_X,
+        nameShiftY: NAME_DESKTOP_SHIFT_Y,
+        nameTapePadX: NAME_TAPE_PAD_X_DESKTOP,
+        nameTapePadY: NAME_TAPE_PAD_Y_DESKTOP,
+        // pax
+        paxFont: PAX_DESKTOP_FONT,
+        paxShiftYPx: PAX_SHIFT_Y_DESKTOP_PX,
+        // countdown
+        top: DESKTOP_TOP,
+        left: DESKTOP_LEFT,
+        wPct: DESKTOP_W,
+        hPx: DESKTOP_H,
+        shiftX: DESKTOP_SHIFT_X,
+        shiftY: DESKTOP_SHIFT_Y,
+        valueSize: DESKTOP_VALUE_SIZE,
+        labelSize: DESKTOP_LABEL_SIZE,
+        colonSize: 38,
+        // hotspots
+        waze: WAZE_DESKTOP,
+        cal: CAL_DESKTOP,
+      };
+    }
+
+    if (mode === "phoneXL") {
+      return {
+        // name
+        nameTop: NAME_PHONE_XL_TOP,
+        nameLeft: NAME_PHONE_XL_LEFT,
+        nameWPct: NAME_PHONE_XL_W,
+        nameMinHPx: NAME_PHONE_XL_MIN_H,
+        nameFont: NAME_PHONE_XL_FONT,
+        nameMinFont: NAME_PHONE_XL_MIN_FONT,
+        nameLineHeight: NAME_PHONE_XL_LINE_HEIGHT,
+        nameGap: NAME_PHONE_XL_GAP,
+        nameShiftX: NAME_PHONE_XL_SHIFT_X,
+        nameShiftY: NAME_PHONE_XL_SHIFT_Y,
+        nameTapePadX: NAME_TAPE_PAD_X_PHONE_XL,
+        nameTapePadY: NAME_TAPE_PAD_Y_PHONE_XL,
+        // pax
+        paxFont: PAX_PHONE_XL_FONT,
+        paxShiftYPx: PAX_SHIFT_Y_PHONE_XL_PX,
+        // countdown
+        top: PHONE_XL_TOP,
+        left: PHONE_XL_LEFT,
+        wPct: PHONE_XL_W,
+        hPx: PHONE_XL_H,
+        shiftX: PHONE_XL_SHIFT_X,
+        shiftY: PHONE_XL_SHIFT_Y,
+        valueSize: PHONE_XL_VALUE_SIZE,
+        labelSize: PHONE_XL_LABEL_SIZE,
+        colonSize: 32,
+        // hotspots
+        waze: WAZE_PHONE_XL,
+        cal: CAL_PHONE_XL,
+      };
+    }
+
+    // phone
+    return {
+      // name
+      nameTop: NAME_MOBILE_TOP,
+      nameLeft: NAME_MOBILE_LEFT,
+      nameWPct: NAME_MOBILE_W,
+      nameMinHPx: NAME_MOBILE_MIN_H,
+      nameFont: NAME_MOBILE_FONT,
+      nameMinFont: NAME_MOBILE_MIN_FONT,
+      nameLineHeight: NAME_MOBILE_LINE_HEIGHT,
+      nameGap: NAME_MOBILE_GAP,
+      nameShiftX: NAME_MOBILE_SHIFT_X,
+      nameShiftY: NAME_MOBILE_SHIFT_Y,
+      nameTapePadX: NAME_TAPE_PAD_X_MOBILE,
+      nameTapePadY: NAME_TAPE_PAD_Y_MOBILE,
+      // pax
+      paxFont: PAX_MOBILE_FONT,
+      paxShiftYPx: PAX_SHIFT_Y_MOBILE_PX,
+      // countdown
+      top: MOBILE_TOP,
+      left: MOBILE_LEFT,
+      wPct: MOBILE_W,
+      hPx: MOBILE_H,
+      shiftX: MOBILE_SHIFT_X,
+      shiftY: MOBILE_SHIFT_Y,
+      valueSize: MOBILE_VALUE_SIZE,
+      labelSize: MOBILE_LABEL_SIZE,
+      colonSize: 32,
+      // hotspots
+      waze: WAZE_MOBILE,
+      cal: CAL_MOBILE,
+    };
   }, [
-    isMobile,
-    NAME_MOBILE_TOP,
-    NAME_MOBILE_LEFT,
-    NAME_MOBILE_W,
-    NAME_MOBILE_MIN_H,
-    NAME_MOBILE_FONT,
-    NAME_MOBILE_MIN_FONT,
-    NAME_MOBILE_LINE_HEIGHT,
-    NAME_MOBILE_GAP,
-    NAME_MOBILE_SHIFT_X,
-    NAME_MOBILE_SHIFT_Y,
+    mode,
+
     NAME_DESKTOP_TOP,
     NAME_DESKTOP_LEFT,
     NAME_DESKTOP_W,
@@ -529,38 +642,71 @@ export default function InvitacionPrincipal() {
     NAME_DESKTOP_GAP,
     NAME_DESKTOP_SHIFT_X,
     NAME_DESKTOP_SHIFT_Y,
-    MOBILE_TOP,
-    MOBILE_LEFT,
-    MOBILE_W,
-    MOBILE_H,
-    MOBILE_SHIFT_X,
-    MOBILE_SHIFT_Y,
+    NAME_TAPE_PAD_X_DESKTOP,
+    NAME_TAPE_PAD_Y_DESKTOP,
+    PAX_DESKTOP_FONT,
+    PAX_SHIFT_Y_DESKTOP_PX,
     DESKTOP_TOP,
     DESKTOP_LEFT,
     DESKTOP_W,
     DESKTOP_H,
     DESKTOP_SHIFT_X,
     DESKTOP_SHIFT_Y,
-    PAX_MOBILE_FONT,
-    PAX_DESKTOP_FONT,
-    WAZE_MOBILE,
-    WAZE_DESKTOP,
-    CAL_MOBILE,
-    CAL_DESKTOP,
-    MOBILE_VALUE_SIZE,
-    MOBILE_LABEL_SIZE,
     DESKTOP_VALUE_SIZE,
     DESKTOP_LABEL_SIZE,
-  ]);
+    WAZE_DESKTOP,
+    CAL_DESKTOP,
 
-  const pctToPx = useCallback(
-    (pctStr) => {
-      const pct = parseFloat(String(pctStr).replace("%", ""));
-      if (!pageWidth || Number.isNaN(pct)) return 0;
-      return Math.round((pct / 100) * pageWidth);
-    },
-    [pageWidth]
-  );
+    NAME_PHONE_XL_TOP,
+    NAME_PHONE_XL_LEFT,
+    NAME_PHONE_XL_W,
+    NAME_PHONE_XL_MIN_H,
+    NAME_PHONE_XL_FONT,
+    NAME_PHONE_XL_MIN_FONT,
+    NAME_PHONE_XL_LINE_HEIGHT,
+    NAME_PHONE_XL_GAP,
+    NAME_PHONE_XL_SHIFT_X,
+    NAME_PHONE_XL_SHIFT_Y,
+    NAME_TAPE_PAD_X_PHONE_XL,
+    NAME_TAPE_PAD_Y_PHONE_XL,
+    PAX_PHONE_XL_FONT,
+    PAX_SHIFT_Y_PHONE_XL_PX,
+    PHONE_XL_TOP,
+    PHONE_XL_LEFT,
+    PHONE_XL_W,
+    PHONE_XL_H,
+    PHONE_XL_SHIFT_X,
+    PHONE_XL_SHIFT_Y,
+    PHONE_XL_VALUE_SIZE,
+    PHONE_XL_LABEL_SIZE,
+    WAZE_PHONE_XL,
+    CAL_PHONE_XL,
+
+    NAME_MOBILE_TOP,
+    NAME_MOBILE_LEFT,
+    NAME_MOBILE_W,
+    NAME_MOBILE_MIN_H,
+    NAME_MOBILE_FONT,
+    NAME_MOBILE_MIN_FONT,
+    NAME_MOBILE_LINE_HEIGHT,
+    NAME_MOBILE_GAP,
+    NAME_MOBILE_SHIFT_X,
+    NAME_MOBILE_SHIFT_Y,
+    NAME_TAPE_PAD_X_MOBILE,
+    NAME_TAPE_PAD_Y_MOBILE,
+    PAX_MOBILE_FONT,
+    PAX_SHIFT_Y_MOBILE_PX,
+    MOBILE_TOP,
+    MOBILE_LEFT,
+    MOBILE_W,
+    MOBILE_H,
+    MOBILE_SHIFT_X,
+    MOBILE_SHIFT_Y,
+    MOBILE_VALUE_SIZE,
+    MOBILE_LABEL_SIZE,
+    WAZE_MOBILE,
+    CAL_MOBILE,
+  ]);
 
   const boxWidthPx = useMemo(() => pctToPx(preset.wPct), [pctToPx, preset.wPct]);
   const nameWidthPx = useMemo(() => pctToPx(preset.nameWPct), [pctToPx, preset.nameWPct]);
@@ -597,12 +743,6 @@ export default function InvitacionPrincipal() {
 
     return Math.max(preset.nameMinHPx, needed);
   }, [guests, preset.nameMinHPx, nameFontPx, preset.nameLineHeight, preset.nameGap]);
-
-  // ✅ offset final del PAX (para moverlo sin tocar el nombre)
-  const paxShiftYPx = useMemo(
-    () => (isMobile ? PAX_SHIFT_Y_MOBILE_PX : PAX_SHIFT_Y_DESKTOP_PX),
-    [isMobile, PAX_SHIFT_Y_MOBILE_PX, PAX_SHIFT_Y_DESKTOP_PX]
-  );
 
   // =============================
   // LINKS: WAZE + CALENDAR
@@ -692,9 +832,7 @@ export default function InvitacionPrincipal() {
                           background: NAME_TAPE_BG,
                           opacity: NAME_TAPE_OPACITY,
                           borderRadius: `${NAME_TAPE_RADIUS}px`,
-                          padding: isMobile
-                            ? `${NAME_TAPE_PAD_Y_MOBILE}px ${NAME_TAPE_PAD_X_MOBILE}px`
-                            : `${NAME_TAPE_PAD_Y_DESKTOP}px ${NAME_TAPE_PAD_X_DESKTOP}px`,
+                          padding: `${preset.nameTapePadY}px ${preset.nameTapePadX}px`,
                           boxSizing: "border-box",
                         }}
                       >
@@ -730,7 +868,7 @@ export default function InvitacionPrincipal() {
                   )}
 
                   {/* =========================
-                      OVERLAY: ADULTOS / NIÑOS (CON FONDO BLANCO)
+                      OVERLAY: ADULTOS / NIÑOS
                      ========================= */}
                   {!!guests.length && pax && (
                     <div
@@ -739,9 +877,8 @@ export default function InvitacionPrincipal() {
                         top: preset.nameTop,
                         left: preset.nameLeft,
                         width: `${nameWidthPx}px`,
-                        // ✅ aquí se mueve: sumamos paxShiftYPx sin tocar el nombre
                         transform: `translate(calc(-50% + ${preset.nameShiftX}), calc(${preset.nameShiftY} + ${
-                          nameHeightPx + PAX_GAP_PX + paxShiftYPx
+                          nameHeightPx + PAX_GAP_PX + preset.paxShiftYPx
                         }px))`,
                       }}
                     >
@@ -792,9 +929,13 @@ export default function InvitacionPrincipal() {
                       <div className="h-full w-full flex items-center justify-center">
                         <div className="flex items-end justify-center gap-6 md:gap-8">
                           <TimeBox label="Días" value={timeLeft.days} valueSize={preset.valueSize} labelSize={preset.labelSize} />
-                          <div style={{ fontSize: `${preset.colonSize}px`, color: "#4b3a23", lineHeight: 1, transform: "translateY(-6px)" }}>:</div>
+                          <div style={{ fontSize: `${preset.colonSize}px`, color: "#4b3a23", lineHeight: 1, transform: "translateY(-6px)" }}>
+                            :
+                          </div>
                           <TimeBox label="Horas" value={timeLeft.hours} valueSize={preset.valueSize} labelSize={preset.labelSize} />
-                          <div style={{ fontSize: `${preset.colonSize}px`, color: "#4b3a23", lineHeight: 1, transform: "translateY(-6px)" }}>:</div>
+                          <div style={{ fontSize: `${preset.colonSize}px`, color: "#4b3a23", lineHeight: 1, transform: "translateY(-6px)" }}>
+                            :
+                          </div>
                           <TimeBox label="Minutos" value={timeLeft.minutes} valueSize={preset.valueSize} labelSize={preset.labelSize} />
                         </div>
                       </div>
