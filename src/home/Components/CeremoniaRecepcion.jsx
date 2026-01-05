@@ -24,11 +24,30 @@ export default function InvitacionPrincipal() {
   // =============================
   const SLIDES_PAGE = 1;
 
+  // ===== WhatsApp hotspot =====
+  // Página donde está el número (si está en otra, cambiá esto)
+  const WHATSAPP_PAGE = 1;
+
+  // Link WhatsApp (E.164 sin +, sin guiones)
+  const WHATSAPP_PHONE_E164 = "50237144500";
+  const WHATSAPP_TEXT = "Hola, si te confirmo mi asistencia!";
+  const WHATSAPP_URL = useMemo(() => {
+    const q = WHATSAPP_TEXT ? `?text=${encodeURIComponent(WHATSAPP_TEXT)}` : "";
+    return `https://wa.me/${WHATSAPP_PHONE_E164}${q}`;
+  }, []);
+
+  // Ajustá estos 2 bloques hasta que el click quede EXACTO sobre el número/ícono
+  const WHATSAPP_MOBILE = { top: "23%", left: "50%", w: "60%", hPx: 44 };
+  const WHATSAPP_DESKTOP = { top: "23%", left: "50%", w: "50%", hPx: 100 };
+
+  // Texto guía (solo label, delgadito)
+  const WHATSAPP_LABEL = "click aqui";
+
   // Bloque “papel” (tapa el grid) — look impreso (menos “widget encima”)
   const TAPE_MOBILE_TOP = "45%";
   const TAPE_MOBILE_LEFT = "50%";
-  const TAPE_MOBILE_W = "120%";
-  const TAPE_MOBILE_H = 387;
+  const TAPE_MOBILE_W = "95%";
+  const TAPE_MOBILE_H = 375;
 
   const TAPE_DESKTOP_TOP = "47%";
   const TAPE_DESKTOP_LEFT = "50%";
@@ -71,7 +90,8 @@ export default function InvitacionPrincipal() {
     return Math.min(wrapWidth, 1100);
   }, [wrapWidth]);
 
-  const isMobile = pageWidth < 640;
+  // ✅ FIX: mobile debe depender del contenedor (wrap), no del pageWidth
+  const isMobile = wrapWidth < 640;
 
   const preset = useMemo(() => {
     return isMobile
@@ -179,6 +199,9 @@ export default function InvitacionPrincipal() {
     else if (src.endsWith(".jpg")) img.src = src.replace(/\.jpg$/, ".JPG");
   }, []);
 
+  // WhatsApp hotspot preset
+  const waPreset = useMemo(() => (isMobile ? WHATSAPP_MOBILE : WHATSAPP_DESKTOP), [isMobile]);
+
   return (
     <div className="w-full min-h-[100svh] bg-[#dfeee7] flex justify-center px-3 py-6">
       <div ref={wrapRef} className="w-full max-w-[1100px]">
@@ -199,13 +222,66 @@ export default function InvitacionPrincipal() {
           {Array.from({ length: numPages }, (_, idx) => {
             const pageNumber = idx + 1;
 
+            // Wrapper común por página (relative) para hotspots
+            const PageWrapper = ({ children }) => (
+              <div className="relative mx-auto w-fit" style={{ width: pageWidth }}>
+                {children}
+
+                {/* =============================
+                    HOTSPOT WhatsApp + label "click aqui" (texto simple)
+                   ============================= */}
+                {pageNumber === WHATSAPP_PAGE && (
+                  <>
+                    {/* Texto guía (no bloquea el click) */}
+                    <div
+                      className="absolute z-50"
+                      style={{
+                        top: waPreset.top,
+                        left: waPreset.left,
+                        transform: "translate(-50%, calc(-50% - 12px))",
+                        fontSize: isMobile ? 12 : 13,
+                        fontWeight: 400,
+                        letterSpacing: "0.2px",
+                        color: "rgba(63,75,36,0.85)",
+                        background: "transparent",
+                        border: "none",
+                        padding: 0,
+                        boxShadow: "none",
+                        pointerEvents: "none",
+                        userSelect: "none",
+                        whiteSpace: "nowrap",
+                        textShadow: "0 1px 0 rgba(255,255,255,0.65)",
+                      }}
+                    >
+                      {WHATSAPP_LABEL}
+                    </div>
+
+                    {/* Área clickeable */}
+                    <a
+                      href={WHATSAPP_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Escribir por WhatsApp"
+                      title="Escribir por WhatsApp"
+                      className="absolute z-40"
+                      style={{
+                        top: waPreset.top,
+                        left: waPreset.left,
+                        width: `${pctToPx(waPreset.w)}px`,
+                        height: `${waPreset.hPx}px`,
+                        transform: "translate(-50%, -50%)",
+                        background: "transparent",
+                        cursor: "pointer",
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+            );
+
             if (pageNumber === SLIDES_PAGE) {
               return (
-                <div
-                  key={pageNumber}
-                  className="relative mx-auto w-fit"
-                  style={{ width: pageWidth }}
-                >
+                <PageWrapper key={pageNumber}>
                   <Page
                     pageNumber={pageNumber}
                     width={pageWidth}
@@ -270,7 +346,7 @@ export default function InvitacionPrincipal() {
                             }}
                           />
 
-                          {/* Prev/Next (más “impreso”: pequeño y sutil; en móvil se oculta) */}
+                          {/* Prev/Next (desktop) */}
                           <button
                             type="button"
                             onClick={goPrev}
@@ -323,7 +399,7 @@ export default function InvitacionPrincipal() {
                             ›
                           </button>
 
-                          {/* Dots (sutil) */}
+                          {/* Dots */}
                           <div
                             style={{
                               position: "absolute",
@@ -344,16 +420,14 @@ export default function InvitacionPrincipal() {
                                   height: 7,
                                   borderRadius: 999,
                                   background:
-                                    i === active
-                                      ? "rgba(63,75,36,0.72)"
-                                      : "rgba(63,75,36,0.22)",
+                                    i === active ? "rgba(63,75,36,0.72)" : "rgba(63,75,36,0.22)",
                                 }}
                               />
                             ))}
                           </div>
                         </div>
 
-                        {/* Miniaturas (menos “card”, más “impreso”) */}
+                        {/* Miniaturas */}
                         <div
                           style={{
                             flex: "0 0 auto",
@@ -409,19 +483,19 @@ export default function InvitacionPrincipal() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </PageWrapper>
               );
             }
 
             return (
-              <div key={pageNumber} className="mx-auto w-fit">
+              <PageWrapper key={pageNumber}>
                 <Page
                   pageNumber={pageNumber}
                   width={pageWidth}
                   renderTextLayer={false}
                   renderAnnotationLayer={false}
                 />
-              </div>
+              </PageWrapper>
             );
           })}
         </Document>
