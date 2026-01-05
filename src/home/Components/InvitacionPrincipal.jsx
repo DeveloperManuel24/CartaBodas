@@ -60,20 +60,20 @@ export default function InvitacionPrincipal() {
   // =============================
 
   // --- Overlay NOMBRES INVITADOS sobre página 1 ---
-  const NAME_MOBILE_TOP = "17%";
+  const NAME_MOBILE_TOP = "15%";
   const NAME_MOBILE_LEFT = "50%";
-  const NAME_MOBILE_W = "80%";
+  const NAME_MOBILE_W = "70%";
   const NAME_MOBILE_MIN_H = 1;
-  const NAME_MOBILE_FONT = 44;
+  const NAME_MOBILE_FONT = 38;
   const NAME_MOBILE_MIN_FONT = 22;
   const NAME_MOBILE_LINE_HEIGHT = 1.02;
   const NAME_MOBILE_GAP = 6;
 
-  const NAME_DESKTOP_TOP = "17%";
+  const NAME_DESKTOP_TOP = "15%";
   const NAME_DESKTOP_LEFT = "50%";
-  const NAME_DESKTOP_W = "90%";
+  const NAME_DESKTOP_W = "70%";
   const NAME_DESKTOP_MIN_H = 100;
-  const NAME_DESKTOP_FONT = 110;
+  const NAME_DESKTOP_FONT = 90;
   const NAME_DESKTOP_MIN_FONT = 28;
   const NAME_DESKTOP_LINE_HEIGHT = 1.02;
   const NAME_DESKTOP_GAP = 8;
@@ -88,7 +88,7 @@ export default function InvitacionPrincipal() {
   const NAME_TAPE_OPACITY = 1;
   const NAME_TAPE_RADIUS = 0;
 
-  // ✅ NUEVO: expandir el cuadro blanco del nombre
+  // ✅ Expandir el cuadro blanco del nombre
   const NAME_TAPE_PAD_X_MOBILE = 18;
   const NAME_TAPE_PAD_Y_MOBILE = 30;
   const NAME_TAPE_PAD_X_DESKTOP = 32;
@@ -97,13 +97,18 @@ export default function InvitacionPrincipal() {
   // --- Overlay ADULTOS/NIÑOS debajo del nombre ---
   const PAX_GAP_PX = 3;
   const PAX_MOBILE_FONT = 12;
-  const PAX_DESKTOP_FONT = 22;
+  const PAX_DESKTOP_FONT = 20;
+
+  // ✅ NUEVO: mover ADULTOS/NIÑOS (extra separación independiente del nombre)
+  // positivo = baja, negativo = sube
+  const PAX_SHIFT_Y_MOBILE_PX = 10;
+  const PAX_SHIFT_Y_DESKTOP_PX = 3;
 
   // Tape detrás del PAX
   const PAX_TAPE_BG = "white";
   const PAX_TAPE_OPACITY = 1;
   const PAX_TAPE_RADIUS = 0;
-  const PAX_TAPE_PAD_Y = 8;
+  const PAX_TAPE_PAD_Y = 0;
   const PAX_TAPE_PAD_X = 10;
 
   // --- Countdown overlay sobre página 1 ---
@@ -143,7 +148,6 @@ export default function InvitacionPrincipal() {
   const [pax, setPax] = useState(null); // { adultos: number, ninos: number } | null
 
   useEffect(() => {
-    // arregla mojibake típico (Ã±, Ã¡, etc) si tu data vieja ya quedó dañada
     const fixMojibake = (s) => {
       if (!s) return "";
       return String(s)
@@ -197,7 +201,6 @@ export default function InvitacionPrincipal() {
       return Number.isFinite(n) && n >= 0 ? n : null;
     };
 
-    // ✅ base64 UTF-8 real (sin escape/unescape)
     const decodeBase64Utf8 = (b64) => {
       let fixed = String(b64).trim().replace(/ /g, "+").replace(/-/g, "+").replace(/_/g, "/");
       while (fixed.length % 4 !== 0) fixed += "=";
@@ -226,7 +229,7 @@ export default function InvitacionPrincipal() {
 
         const ninos =
           toNum(parsed?.ninos) ??
-          toNum(parsed?.["niños"]) ?? // soporte literal con acento
+          toNum(parsed?.["niños"]) ??
           toNum(parsed?.ninios) ??
           toNum(parsed?.cantidadNinos) ??
           toNum(parsed?.cantNinos);
@@ -595,6 +598,12 @@ export default function InvitacionPrincipal() {
     return Math.max(preset.nameMinHPx, needed);
   }, [guests, preset.nameMinHPx, nameFontPx, preset.nameLineHeight, preset.nameGap]);
 
+  // ✅ offset final del PAX (para moverlo sin tocar el nombre)
+  const paxShiftYPx = useMemo(
+    () => (isMobile ? PAX_SHIFT_Y_MOBILE_PX : PAX_SHIFT_Y_DESKTOP_PX),
+    [isMobile, PAX_SHIFT_Y_MOBILE_PX, PAX_SHIFT_Y_DESKTOP_PX]
+  );
+
   // =============================
   // LINKS: WAZE + CALENDAR
   // =============================
@@ -683,8 +692,6 @@ export default function InvitacionPrincipal() {
                           background: NAME_TAPE_BG,
                           opacity: NAME_TAPE_OPACITY,
                           borderRadius: `${NAME_TAPE_RADIUS}px`,
-
-                          // ✅ EXPANSIÓN del cuadro blanco del nombre
                           padding: isMobile
                             ? `${NAME_TAPE_PAD_Y_MOBILE}px ${NAME_TAPE_PAD_X_MOBILE}px`
                             : `${NAME_TAPE_PAD_Y_DESKTOP}px ${NAME_TAPE_PAD_X_DESKTOP}px`,
@@ -732,7 +739,10 @@ export default function InvitacionPrincipal() {
                         top: preset.nameTop,
                         left: preset.nameLeft,
                         width: `${nameWidthPx}px`,
-                        transform: `translate(calc(-50% + ${preset.nameShiftX}), calc(${preset.nameShiftY} + ${nameHeightPx + PAX_GAP_PX}px))`,
+                        // ✅ aquí se mueve: sumamos paxShiftYPx sin tocar el nombre
+                        transform: `translate(calc(-50% + ${preset.nameShiftX}), calc(${preset.nameShiftY} + ${
+                          nameHeightPx + PAX_GAP_PX + paxShiftYPx
+                        }px))`,
                       }}
                     >
                       <div
