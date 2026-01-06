@@ -1,8 +1,22 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
+// Igual que en App.jsx
+const getQueryString = (location) => {
+  if (location?.search && location.search.includes("?")) return location.search;
+
+  const hash = String(location?.hash || "");
+  const qPos = hash.indexOf("?");
+  if (qPos >= 0) return hash.substring(qPos);
+
+  return "";
+};
 
 export default function Invitacion() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const qs = getQueryString(location); // aquí vive ?i=...&adultos=...&ninos=...
 
   return (
     <div className="relative w-full min-h-[100svh] overflow-hidden bg-black">
@@ -39,22 +53,16 @@ export default function Invitacion() {
 
       {/* Contenido */}
       <div className="relative z-10 min-h-[100svh] w-full flex flex-col items-center">
-        {/* Espacio superior */}
         <div className="h-[10svh] lg:h-[12svh]" />
 
-        {/* Título (TEXTO, reemplaza imagen) */}
         <div
           className="select-none pointer-events-none text-center"
           style={{
-            // Si algún día metés la fuente real como archivo, dejala primero:
-            // fontFamily: "'EdwardianScriptITC', 'Great Vibes', cursive",
             fontFamily: "'Great Vibes', cursive",
             color: "rgba(255,255,255,0.98)",
             textShadow: "0 2px 14px rgba(0,0,0,0.55)",
             lineHeight: 0.95,
             letterSpacing: "0.02em",
-
-            // Tamaño y “ancho” visual similar a tu PNG
             fontSize: "clamp(44px, 7.2vw, 120px)",
             width: "min(96vw, 1100px)",
           }}
@@ -62,14 +70,12 @@ export default function Invitacion() {
           Mario&nbsp;&amp;&nbsp;Andrea
         </div>
 
-        {/* Separación (controla dónde cae INGRESAR) */}
         <div className="h-[10svh] sm:h-[12svh] lg:h-[8svh]" />
 
-        {/* INGRESAR */}
         <button
           type="button"
           aria-label="Ingresar"
-          onClick={() => navigate("/boda")}
+          onClick={() => navigate(`/boda${qs}`)} // CLAVE: conservar query
           className="text-center"
           style={{
             fontFamily: "'Cinzel', serif",
@@ -87,7 +93,6 @@ export default function Invitacion() {
           INGRESAR
         </button>
 
-        {/* Relleno abajo para centrar visualmente */}
         <div className="flex-1" />
       </div>
     </div>

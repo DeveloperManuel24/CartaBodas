@@ -1,4 +1,3 @@
-// src/home/Components/InvitacionPrincipal.jsx
 import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
@@ -49,7 +48,6 @@ export default function InvitacionPrincipal() {
   const EVENT_START_LOCAL = "20260228T100000";
   const EVENT_END_LOCAL = "20260228T120000";
 
-  // ✅ WAZE EXACTO
   const WAZE_EXACT_WEB_URL =
     "https://www.waze.com/live-map/meeting?token=vKyrVKJMB5oKZPfP6w-sd&locale=es-419&env=row&utm_campaign=share_drive&utm_source=waze_app&utm_medium=undefined";
 
@@ -58,10 +56,6 @@ export default function InvitacionPrincipal() {
   // =============================
   // AJUSTES POR PORCENTAJE
   // =============================
-
-  // -----------------------------
-  // PHONE (<= 409px)
-  // -----------------------------
   const NAME_MOBILE_TOP = "15%";
   const NAME_MOBILE_LEFT = "50%";
   const NAME_MOBILE_W = "70%";
@@ -91,10 +85,6 @@ export default function InvitacionPrincipal() {
   const WAZE_MOBILE = { top: "90%", left: "40%", w: "16%", hPx: 56 };
   const CAL_MOBILE = { top: "90%", left: "63%", w: "16%", hPx: 56 };
 
-  // -----------------------------
-  // PHONE XL (410px - 639px)  ✅ iPhone 12 Pro Max / 15 / etc.
-  // TOCÁ SOLO ESTO para esos teléfonos
-  // -----------------------------
   const NAME_PHONE_XL_TOP = "14%";
   const NAME_PHONE_XL_LEFT = "50%";
   const NAME_PHONE_XL_W = "68%";
@@ -124,9 +114,6 @@ export default function InvitacionPrincipal() {
   const WAZE_PHONE_XL = { top: "90%", left: "40%", w: "15%", hPx: 60 };
   const CAL_PHONE_XL = { top: "90%", left: "63%", w: "15%", hPx: 60 };
 
-  // -----------------------------
-  // DESKTOP (>= 640px)
-  // -----------------------------
   const NAME_DESKTOP_TOP = "15%";
   const NAME_DESKTOP_LEFT = "50%";
   const NAME_DESKTOP_W = "70%";
@@ -156,9 +143,6 @@ export default function InvitacionPrincipal() {
   const WAZE_DESKTOP = { top: "90%", left: "38%", w: "10%", hPx: 100 };
   const CAL_DESKTOP = { top: "90%", left: "63%", w: "10%", hPx: 100 };
 
-  // -----------------------------
-  // Tape detrás del nombre
-  // -----------------------------
   const NAME_TAPE_BG = "white";
   const NAME_TAPE_OPACITY = 1;
   const NAME_TAPE_RADIUS = 0;
@@ -172,7 +156,6 @@ export default function InvitacionPrincipal() {
   const NAME_TAPE_PAD_X_DESKTOP = 32;
   const NAME_TAPE_PAD_Y_DESKTOP = 16;
 
-  // Tape detrás del PAX
   const PAX_GAP_PX = 3;
   const PAX_TAPE_BG = "white";
   const PAX_TAPE_OPACITY = 1;
@@ -181,10 +164,51 @@ export default function InvitacionPrincipal() {
   const PAX_TAPE_PAD_X = 10;
 
   // =============================
-  // INVITADOS + PAX (URL + localStorage)
+  // INVITADOS + PAX (SOLO URL)
   // =============================
   const [guests, setGuests] = useState([]);
   const [pax, setPax] = useState(null);
+
+  // 🔥 Parámetros desde search o desde hash (HashRouter)
+  const getQueryString = () => {
+    const search = String(window.location.search || "");
+    if (search && search.includes("?")) return search;
+
+    const hash = String(window.location.hash || "");
+    const qPos = hash.indexOf("?");
+    if (qPos >= 0) return hash.substring(qPos);
+
+    return "";
+  };
+
+  const [queryStr, setQueryStr] = useState(() => getQueryString());
+
+  useEffect(() => {
+    const sync = () => setQueryStr(getQueryString());
+
+    const patch = (method) => {
+      const original = history[method];
+      history[method] = function (...args) {
+        const ret = original.apply(this, args);
+        sync();
+        return ret;
+      };
+      return () => (history[method] = original);
+    };
+
+    const unPush = patch("pushState");
+    const unReplace = patch("replaceState");
+
+    window.addEventListener("popstate", sync);
+    window.addEventListener("hashchange", sync);
+
+    return () => {
+      unPush();
+      unReplace();
+      window.removeEventListener("popstate", sync);
+      window.removeEventListener("hashchange", sync);
+    };
+  }, []);
 
   useEffect(() => {
     const fixMojibake = (s) => {
@@ -249,168 +273,54 @@ export default function InvitacionPrincipal() {
       return new TextDecoder("utf-8").decode(bytes);
     };
 
-    const fromBase64Pack = () => {
-      const params = new URLSearchParams(window.location.search);
-      const pack = params.get("i");
-      if (!pack) return { invitados: [], pax: null };
+    const params = new URLSearchParams(queryStr);
 
+    // ✅ PAX SIEMPRE DESDE URL (por familia)
+    const adultos =
+      toNum(params.get("adultos")) ?? toNum(params.get("adulto")) ?? toNum(params.get("a"));
+    const ninos =
+      toNum(params.get("ninos")) ??
+      toNum(params.get("niños")) ??
+      toNum(params.get("ninios")) ??
+      toNum(params.get("n"));
+
+    const paxFinal =
+      adultos === null && ninos === null
+        ? null
+        : { adultos: Math.max(0, adultos ?? 0), ninos: Math.max(0, ninos ?? 0) };
+
+    setPax(paxFinal);
+
+    // ✅ Invitados desde pack i=
+    const pack = params.get("i");
+    let invitados = [];
+
+    if (pack) {
       try {
         const json = decodeBase64Utf8(pack);
         const parsed = JSON.parse(json);
-
-        const invitados = Array.isArray(parsed?.invitados) ? parsed.invitados : [];
-
-        const adultos =
-          toNum(parsed?.adultos) ??
-          toNum(parsed?.adulto) ??
-          toNum(parsed?.cantidadAdultos) ??
-          toNum(parsed?.cantAdultos);
-
-        const ninos =
-          toNum(parsed?.ninos) ??
-          toNum(parsed?.["niños"]) ??
-          toNum(parsed?.ninios) ??
-          toNum(parsed?.cantidadNinos) ??
-          toNum(parsed?.cantNinos);
-
-        const paxOut =
-          adultos === null && ninos === null
-            ? null
-            : { adultos: Math.max(0, adultos ?? 0), ninos: Math.max(0, ninos ?? 0) };
-
-        const namesOut = invitados.map((x) => buildFullName(x)).map(normalize).filter(Boolean);
-
-        return { invitados: namesOut, pax: paxOut };
+        const rawInv = Array.isArray(parsed?.invitados) ? parsed.invitados : [];
+        invitados = rawInv.map((x) => buildFullName(x)).map(normalize).filter(Boolean);
       } catch {
-        return { invitados: [], pax: null };
+        invitados = [];
       }
-    };
+    }
 
-    const fromUrlLegacy = () => {
-      const params = new URLSearchParams(window.location.search);
+    // Legacy extra (si lo usás)
+    const many = params
+      .getAll("invitado")
+      .concat(params.getAll("guest"))
+      .concat(params.getAll("nombreCompleto"));
 
-      const many = params
-        .getAll("invitado")
-        .concat(params.getAll("guest"))
-        .concat(params.getAll("nombreCompleto"));
+    many.forEach((v) => {
+      const n = normalize(v);
+      if (n) invitados.push(n);
+    });
 
-      const invitadoPack = params.get("invitados");
-      const nombre = params.get("nombre");
-      const apellido = params.get("apellido");
-
-      const out = [];
-
-      many.forEach((v) => {
-        const n = normalize(v);
-        if (n) out.push(n);
-      });
-
-      if (invitadoPack) {
-        const raw = safeDecode(invitadoPack);
-        try {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) {
-            parsed.forEach((x) => {
-              const n = buildFullName(x);
-              if (n) out.push(n);
-            });
-          } else {
-            const n = buildFullName(parsed);
-            if (n) out.push(n);
-          }
-        } catch {
-          raw
-            .split(",")
-            .map((x) => normalize(x))
-            .filter(Boolean)
-            .forEach((x) => out.push(x));
-        }
-      }
-
-      if (nombre || apellido) {
-        const n = normalize(`${nombre || ""} ${apellido || ""}`);
-        if (n) out.push(n);
-      }
-
-      return out;
-    };
-
-    const fromStorageGuestsLegacy = () => {
-      const out = [];
-      try {
-        const rawArr = localStorage.getItem("invitados");
-        if (rawArr) {
-          const parsed = JSON.parse(rawArr);
-
-          if (Array.isArray(parsed)) {
-            parsed.forEach((x) => {
-              const n = buildFullName(x);
-              if (n) out.push(n);
-            });
-          } else if (parsed?.invitados && Array.isArray(parsed.invitados)) {
-            parsed.invitados.forEach((x) => {
-              const n = buildFullName(x);
-              if (n) out.push(n);
-            });
-          }
-        }
-
-        const rawOne = localStorage.getItem("invitado");
-        if (rawOne) {
-          try {
-            const parsed = JSON.parse(rawOne);
-            const n = buildFullName(parsed);
-            if (n) out.push(n);
-          } catch {
-            const n = normalize(rawOne);
-            if (n) out.push(n);
-          }
-        }
-      } catch {}
-      return out;
-    };
-
-    const paxFromAnyStorage = () => {
-      const keys = ["config_invitados_v2", "config_invitados_v1", "invitados"];
-
-      for (const k of keys) {
-        try {
-          const raw = localStorage.getItem(k);
-          if (!raw) continue;
-
-          const parsed = JSON.parse(raw);
-
-          const adultos =
-            toNum(parsed?.adultos) ??
-            toNum(parsed?.adulto) ??
-            toNum(parsed?.cantidadAdultos) ??
-            toNum(parsed?.cantAdultos);
-
-          const ninos =
-            toNum(parsed?.ninos) ??
-            toNum(parsed?.["niños"]) ??
-            toNum(parsed?.ninios) ??
-            toNum(parsed?.cantidadNinos) ??
-            toNum(parsed?.cantNinos);
-
-          if (adultos === null && ninos === null) continue;
-
-          return { adultos: Math.max(0, adultos ?? 0), ninos: Math.max(0, ninos ?? 0) };
-        } catch {}
-      }
-
-      return null;
-    };
-
-    const base64Data = fromBase64Pack();
-
-    const list = [...base64Data.invitados, ...fromUrlLegacy(), ...fromStorageGuestsLegacy()]
-      .map(normalize)
-      .filter(Boolean);
-
+    // dedupe
     const seen = new Set();
     const uniq = [];
-    for (const g of list) {
+    for (const g of invitados.map(normalize).filter(Boolean)) {
       const key = g.toLowerCase();
       if (!seen.has(key)) {
         seen.add(key);
@@ -418,18 +328,7 @@ export default function InvitacionPrincipal() {
       }
     }
     setGuests(uniq);
-
-    const storagePax = paxFromAnyStorage();
-    const mergedPax =
-      base64Data.pax || storagePax
-        ? {
-            adultos: base64Data.pax?.adultos ?? storagePax?.adultos ?? 0,
-            ninos: base64Data.pax?.ninos ?? storagePax?.ninos ?? 0,
-          }
-        : null;
-
-    setPax(mergedPax);
-  }, []);
+  }, [queryStr]);
 
   // =============================
   // COUNTDOWN
@@ -460,7 +359,7 @@ export default function InvitacionPrincipal() {
   }, []);
 
   // =============================
-  // RESPONSIVE PDF (ancho real)
+  // RESPONSIVE PDF
   // =============================
   const wrapRef = useRef(null);
   const [wrapWidth, setWrapWidth] = useState(0);
@@ -512,7 +411,6 @@ export default function InvitacionPrincipal() {
     return Math.min(wrapWidth, 1100);
   }, [wrapWidth]);
 
-  // ✅ 3 modos: phone / phoneXL / desktop
   const mode = useMemo(() => {
     if (pageWidth >= 640) return "desktop";
     if (pageWidth >= 410) return "phoneXL";
@@ -531,7 +429,6 @@ export default function InvitacionPrincipal() {
   const preset = useMemo(() => {
     if (mode === "desktop") {
       return {
-        // name
         nameTop: NAME_DESKTOP_TOP,
         nameLeft: NAME_DESKTOP_LEFT,
         nameWPct: NAME_DESKTOP_W,
@@ -544,10 +441,8 @@ export default function InvitacionPrincipal() {
         nameShiftY: NAME_DESKTOP_SHIFT_Y,
         nameTapePadX: NAME_TAPE_PAD_X_DESKTOP,
         nameTapePadY: NAME_TAPE_PAD_Y_DESKTOP,
-        // pax
         paxFont: PAX_DESKTOP_FONT,
         paxShiftYPx: PAX_SHIFT_Y_DESKTOP_PX,
-        // countdown
         top: DESKTOP_TOP,
         left: DESKTOP_LEFT,
         wPct: DESKTOP_W,
@@ -557,7 +452,6 @@ export default function InvitacionPrincipal() {
         valueSize: DESKTOP_VALUE_SIZE,
         labelSize: DESKTOP_LABEL_SIZE,
         colonSize: 38,
-        // hotspots
         waze: WAZE_DESKTOP,
         cal: CAL_DESKTOP,
       };
@@ -565,7 +459,6 @@ export default function InvitacionPrincipal() {
 
     if (mode === "phoneXL") {
       return {
-        // name
         nameTop: NAME_PHONE_XL_TOP,
         nameLeft: NAME_PHONE_XL_LEFT,
         nameWPct: NAME_PHONE_XL_W,
@@ -578,10 +471,8 @@ export default function InvitacionPrincipal() {
         nameShiftY: NAME_PHONE_XL_SHIFT_Y,
         nameTapePadX: NAME_TAPE_PAD_X_PHONE_XL,
         nameTapePadY: NAME_TAPE_PAD_Y_PHONE_XL,
-        // pax
         paxFont: PAX_PHONE_XL_FONT,
         paxShiftYPx: PAX_SHIFT_Y_PHONE_XL_PX,
-        // countdown
         top: PHONE_XL_TOP,
         left: PHONE_XL_LEFT,
         wPct: PHONE_XL_W,
@@ -591,15 +482,12 @@ export default function InvitacionPrincipal() {
         valueSize: PHONE_XL_VALUE_SIZE,
         labelSize: PHONE_XL_LABEL_SIZE,
         colonSize: 32,
-        // hotspots
         waze: WAZE_PHONE_XL,
         cal: CAL_PHONE_XL,
       };
     }
 
-    // phone
     return {
-      // name
       nameTop: NAME_MOBILE_TOP,
       nameLeft: NAME_MOBILE_LEFT,
       nameWPct: NAME_MOBILE_W,
@@ -612,10 +500,8 @@ export default function InvitacionPrincipal() {
       nameShiftY: NAME_MOBILE_SHIFT_Y,
       nameTapePadX: NAME_TAPE_PAD_X_MOBILE,
       nameTapePadY: NAME_TAPE_PAD_Y_MOBILE,
-      // pax
       paxFont: PAX_MOBILE_FONT,
       paxShiftYPx: PAX_SHIFT_Y_MOBILE_PX,
-      // countdown
       top: MOBILE_TOP,
       left: MOBILE_LEFT,
       wPct: MOBILE_W,
@@ -625,95 +511,14 @@ export default function InvitacionPrincipal() {
       valueSize: MOBILE_VALUE_SIZE,
       labelSize: MOBILE_LABEL_SIZE,
       colonSize: 32,
-      // hotspots
       waze: WAZE_MOBILE,
       cal: CAL_MOBILE,
     };
-  }, [
-    mode,
-
-    NAME_DESKTOP_TOP,
-    NAME_DESKTOP_LEFT,
-    NAME_DESKTOP_W,
-    NAME_DESKTOP_MIN_H,
-    NAME_DESKTOP_FONT,
-    NAME_DESKTOP_MIN_FONT,
-    NAME_DESKTOP_LINE_HEIGHT,
-    NAME_DESKTOP_GAP,
-    NAME_DESKTOP_SHIFT_X,
-    NAME_DESKTOP_SHIFT_Y,
-    NAME_TAPE_PAD_X_DESKTOP,
-    NAME_TAPE_PAD_Y_DESKTOP,
-    PAX_DESKTOP_FONT,
-    PAX_SHIFT_Y_DESKTOP_PX,
-    DESKTOP_TOP,
-    DESKTOP_LEFT,
-    DESKTOP_W,
-    DESKTOP_H,
-    DESKTOP_SHIFT_X,
-    DESKTOP_SHIFT_Y,
-    DESKTOP_VALUE_SIZE,
-    DESKTOP_LABEL_SIZE,
-    WAZE_DESKTOP,
-    CAL_DESKTOP,
-
-    NAME_PHONE_XL_TOP,
-    NAME_PHONE_XL_LEFT,
-    NAME_PHONE_XL_W,
-    NAME_PHONE_XL_MIN_H,
-    NAME_PHONE_XL_FONT,
-    NAME_PHONE_XL_MIN_FONT,
-    NAME_PHONE_XL_LINE_HEIGHT,
-    NAME_PHONE_XL_GAP,
-    NAME_PHONE_XL_SHIFT_X,
-    NAME_PHONE_XL_SHIFT_Y,
-    NAME_TAPE_PAD_X_PHONE_XL,
-    NAME_TAPE_PAD_Y_PHONE_XL,
-    PAX_PHONE_XL_FONT,
-    PAX_SHIFT_Y_PHONE_XL_PX,
-    PHONE_XL_TOP,
-    PHONE_XL_LEFT,
-    PHONE_XL_W,
-    PHONE_XL_H,
-    PHONE_XL_SHIFT_X,
-    PHONE_XL_SHIFT_Y,
-    PHONE_XL_VALUE_SIZE,
-    PHONE_XL_LABEL_SIZE,
-    WAZE_PHONE_XL,
-    CAL_PHONE_XL,
-
-    NAME_MOBILE_TOP,
-    NAME_MOBILE_LEFT,
-    NAME_MOBILE_W,
-    NAME_MOBILE_MIN_H,
-    NAME_MOBILE_FONT,
-    NAME_MOBILE_MIN_FONT,
-    NAME_MOBILE_LINE_HEIGHT,
-    NAME_MOBILE_GAP,
-    NAME_MOBILE_SHIFT_X,
-    NAME_MOBILE_SHIFT_Y,
-    NAME_TAPE_PAD_X_MOBILE,
-    NAME_TAPE_PAD_Y_MOBILE,
-    PAX_MOBILE_FONT,
-    PAX_SHIFT_Y_MOBILE_PX,
-    MOBILE_TOP,
-    MOBILE_LEFT,
-    MOBILE_W,
-    MOBILE_H,
-    MOBILE_SHIFT_X,
-    MOBILE_SHIFT_Y,
-    MOBILE_VALUE_SIZE,
-    MOBILE_LABEL_SIZE,
-    WAZE_MOBILE,
-    CAL_MOBILE,
-  ]);
+  }, [mode]);
 
   const boxWidthPx = useMemo(() => pctToPx(preset.wPct), [pctToPx, preset.wPct]);
   const nameWidthPx = useMemo(() => pctToPx(preset.nameWPct), [pctToPx, preset.nameWPct]);
 
-  // =============================
-  // AUTO-SCALE DEL NOMBRE
-  // =============================
   const nameFontPx = useMemo(() => {
     if (!guests.length) return preset.nameFont;
 
@@ -787,6 +592,9 @@ export default function InvitacionPrincipal() {
     window.open(googleCalendarUrl, "_blank", "noopener,noreferrer");
   }, [googleCalendarUrl]);
 
+  // =============================
+  // RENDER
+  // =============================
   return (
     <div className="w-full min-h-[100svh] bg-[#dfeee7] flex justify-center px-3 py-6">
       <div ref={wrapRef} className="w-full max-w-[1100px]">
@@ -812,9 +620,6 @@ export default function InvitacionPrincipal() {
                 <div key={pageNumber} className="relative mx-auto w-fit" style={{ width: pageWidth }}>
                   <Page pageNumber={pageNumber} width={pageWidth} renderTextLayer={false} renderAnnotationLayer={false} />
 
-                  {/* =========================
-                      OVERLAY: NOMBRES INVITADOS
-                     ========================= */}
                   {!!guests.length && (
                     <div
                       className="absolute z-20 pointer-events-none select-none"
@@ -867,9 +672,6 @@ export default function InvitacionPrincipal() {
                     </div>
                   )}
 
-                  {/* =========================
-                      OVERLAY: ADULTOS / NIÑOS
-                     ========================= */}
                   {!!guests.length && pax && (
                     <div
                       className="absolute z-20 pointer-events-none select-none"
@@ -912,9 +714,7 @@ export default function InvitacionPrincipal() {
                     </div>
                   )}
 
-                  {/* =========================
-                      OVERLAY: TAPE + COUNTDOWN
-                     ========================= */}
+                  {/* el resto de tu UI (countdown + hotspots) lo dejás igual a como lo tenías */}
                   <div
                     className="absolute z-20"
                     style={{
@@ -942,7 +742,6 @@ export default function InvitacionPrincipal() {
                     </div>
                   </div>
 
-                  {/* ===== HOTSPOT: WAZE ===== */}
                   <button
                     type="button"
                     aria-label="Abrir Waze"
@@ -961,7 +760,6 @@ export default function InvitacionPrincipal() {
                     }}
                   />
 
-                  {/* ===== HOTSPOT: CALENDARIO ===== */}
                   <button
                     type="button"
                     aria-label="Agregar al calendario"

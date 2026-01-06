@@ -7,14 +7,39 @@ const toInt = (v) => {
   return Number.isFinite(n) && n >= 0 ? n : 0;
 };
 
-// Base64 seguro para tildes/Unicode
-const encodeBase64Unicode = (str) => btoa(unescape(encodeURIComponent(str)));
+// Base64 URL-safe (sin + / =) y seguro para tildes/Unicode
+const encodeBase64UrlUnicode = (str) => {
+  const b64 = btoa(unescape(encodeURIComponent(str)));
+  return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+};
+
+// Detecta si estás usando HashRouter (URL con #/...)
+const isHashRouter = () => {
+  const h = String(window.location.hash || "");
+  return h.startsWith("#/") || h.startsWith("#!");
+};
+
+// Armá el URL base apuntando a la pantalla principal de invitación
+// - BrowserRouter:   https://dominio.com/?i=...
+// - HashRouter:      https://dominio.com/#/?i=...
+const buildInviteBaseUrl = () => {
+  const origin = window.location.origin;
+  const basePath = window.location.pathname; // mantiene subpath si existe
+
+  if (isHashRouter()) {
+    // Invitación en root del hash
+    return `${origin}${basePath}#/`;
+  }
+
+  // Invitación en root normal
+  return `${origin}/`;
+};
 
 export default function ConfigurarInvitados() {
-  const [cantidad, setCantidad] = useState(""); // cantidad de invitados (dinámico)
-  const [adultos, setAdultos] = useState("");   // número de adultos (solo número)
-  const [ninos, setNinos] = useState("");       // número de niños (solo número)
-  const [invitados, setInvitados] = useState([]); // [{nombre, apellido}...]
+  const [cantidad, setCantidad] = useState("");
+  const [adultos, setAdultos] = useState("");
+  const [ninos, setNinos] = useState("");
+  const [invitados, setInvitados] = useState([]);
 
   const buildInvitados = (total, prev) =>
     Array.from({ length: total }, (_, i) => prev?.[i] || { nombre: "", apellido: "" });
@@ -46,7 +71,7 @@ export default function ConfigurarInvitados() {
     }
   }, []);
 
-  // Guardar en localStorage cuando cambie algo
+  // Guardar en localStorage (solo para que tu configurador recuerde lo último que editaste)
   useEffect(() => {
     try {
       const payload = {
@@ -56,9 +81,7 @@ export default function ConfigurarInvitados() {
         invitados,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    } catch {
-      // no rompemos UI si storage falla
-    }
+    } catch {}
   }, [cantidad, adultos, ninos, invitados]);
 
   const handleCantidadChange = (e) => {
@@ -90,8 +113,10 @@ export default function ConfigurarInvitados() {
       };
 
       const json = JSON.stringify(payload);
-      const base64 = encodeBase64Unicode(json);
-      const url = `${window.location.origin}/?i=${base64}`;
+      const base64 = encodeBase64UrlUnicode(json);
+
+      const base = buildInviteBaseUrl();
+      const url = `${base}?i=${base64}&adultos=${toInt(adultos)}&ninos=${toInt(ninos)}`;
 
       await navigator.clipboard.writeText(url);
       alert(`Link copiado al portapapeles:\n\n${url}`);
